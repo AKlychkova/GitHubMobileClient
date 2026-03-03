@@ -29,6 +29,10 @@ kotlin {
         androidMain.dependencies {
             implementation(libs.compose.uiToolingPreview)
             implementation(libs.androidx.activity.compose)
+            implementation(libs.ktor.android)
+        }
+        iosMain.dependencies {
+            implementation(libs.ktor.ios)
         }
         commonMain.dependencies {
             implementation(libs.compose.runtime)
@@ -41,6 +45,9 @@ kotlin {
             implementation(libs.androidx.lifecycle.runtimeCompose)
             implementation(libs.navigation.compose)
             implementation(libs.serialization.json)
+            implementation(libs.coil.compose)
+            implementation(libs.coil.network)
+            implementation(libs.ktor.core)
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)

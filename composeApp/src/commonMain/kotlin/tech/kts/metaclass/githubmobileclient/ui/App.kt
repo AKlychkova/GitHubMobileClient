@@ -8,45 +8,51 @@ import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import kotlinx.serialization.Serializable
 import tech.kts.metaclass.githubmobileclient.ui.login.LoginScreen
+import tech.kts.metaclass.githubmobileclient.ui.main.MainScreen
 import tech.kts.metaclass.githubmobileclient.ui.start.StartScreen
-
-@Serializable
-object Start
-
-@Serializable
-object Login
 
 @Composable
 fun App() {
-    val navController = rememberNavController()
+    MaterialTheme {
+        RootNavHost()
+    }
+}
 
+@Composable
+private fun RootNavHost(navController: NavHostController = rememberNavController()) {
     NavHost(
         navController = navController,
-        startDestination = Start,
+        startDestination = Destination.Start,
         modifier = Modifier
             .fillMaxSize()
             .padding(WindowInsets.safeDrawing.asPaddingValues())
     ) {
-        composable<Start> {
-            MaterialTheme {
-                StartScreen(
-                    onButtonClick = {
-                        navController.navigate(route = Login)
-                    }
-                )
-            }
+        composable<Destination.Start> {
+            StartScreen(
+                onNavigateToLogin = {
+                    navController.navigate(route = Destination.Login)
+                }
+            )
+
         }
-        composable<Login> {
-            MaterialTheme {
-                LoginScreen(
-                    onLoginClick = { _, _ -> }
-                )
-            }
+        composable<Destination.Login> {
+            LoginScreen(
+                onNavigateToMain = {
+                    navController.navigate(route = Destination.Main) {
+                        popUpTo<Destination.Start> {
+                            inclusive = true
+                        }
+                    }
+                }
+            )
+        }
+        composable<Destination.Main> {
+            MainScreen()
         }
     }
 }
