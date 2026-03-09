@@ -47,7 +47,10 @@ private fun MainView(
                 .fillMaxSize(),
             verticalArrangement = Arrangement.spacedBy(gapSmall)
         ) {
-            items(state.filteredItems) { repository ->
+            items(
+                items = state.filteredItems,
+                key = { it.id }
+            ) { repository ->
                 RepositoryView(
                     repository = repository,
                     modifier = Modifier
@@ -62,6 +65,7 @@ private fun MainView(
 @Preview
 private fun MainScreenPreview() {
     val repositoryMock = GitHubRepository(
+        id = 0,
         name = "My first repository",
         description = "Test project",
         language = ProgrammingLanguage.KOTLIN,
@@ -71,7 +75,7 @@ private fun MainScreenPreview() {
             avatarUrl = "https://avatars.githubusercontent.com/u/90353866?v=4"
         )
     )
-    val repositories = List(10) { repositoryMock }
+    val repositories = List(10) { id -> repositoryMock.copy(id = id) }
     var state by remember { mutableStateOf(MainUiState(repositories)) }
 
     GitHubMaterialTheme {
@@ -83,6 +87,7 @@ private fun MainScreenPreview() {
 @Preview
 private fun MainScreenPreviewDark() {
     val repositoryMock = GitHubRepository(
+        id = 0,
         name = "My first repository",
         description = "Test project",
         language = ProgrammingLanguage.KOTLIN,
@@ -92,7 +97,7 @@ private fun MainScreenPreviewDark() {
             avatarUrl = "https://avatars.githubusercontent.com/u/90353866?v=4"
         )
     )
-    val repositories = List(10) { repositoryMock }
+    val repositories = List(10) { id -> repositoryMock.copy(id = id) }
     var state by remember { mutableStateOf(MainUiState(repositories)) }
 
     GitHubMaterialTheme(darkTheme = true) {

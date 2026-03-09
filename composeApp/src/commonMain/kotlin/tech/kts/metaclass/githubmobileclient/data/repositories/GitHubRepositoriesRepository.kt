@@ -13,6 +13,7 @@ class GitHubRepositoriesRepositoryImpl : GitHubRepositoriesRepository {
     override suspend fun getRepositories(): List<GitHubRepository> {
         return listOf(
             GitHubRepository(
+                id = 0,
                 name = "My first repository",
                 description = "Test project",
                 language = ProgrammingLanguage.KOTLIN,
@@ -23,6 +24,7 @@ class GitHubRepositoriesRepositoryImpl : GitHubRepositoriesRepository {
                 )
             ),
             GitHubRepository(
+                id = 1,
                 name = "Mao project",
                 description = "No description",
                 language = ProgrammingLanguage.JAVA,
@@ -33,6 +35,7 @@ class GitHubRepositoriesRepositoryImpl : GitHubRepositoriesRepository {
                 )
             ),
             GitHubRepository(
+                id = 2,
                 name = "ProstokvashinoApp",
                 description = "Чтобы отрефакторить плохой код, нужно сначала написать новый код, а у нас времени нет",
                 language = ProgrammingLanguage.C_SHARP,
@@ -43,6 +46,7 @@ class GitHubRepositoriesRepositoryImpl : GitHubRepositoriesRepository {
                 )
             ),
             GitHubRepository(
+                id = 3,
                 name = "FriendshipIsMagic",
                 description = "Ребята, давайте жить дружно!",
                 language = ProgrammingLanguage.GO,
@@ -53,6 +57,7 @@ class GitHubRepositoriesRepositoryImpl : GitHubRepositoriesRepository {
                 )
             ),
             GitHubRepository(
+                id = 4,
                 name = "FireStation",
                 description = "Тили-тили-тили-бом, не сгорел чтоб больше дом",
                 language = ProgrammingLanguage.PYTHON,

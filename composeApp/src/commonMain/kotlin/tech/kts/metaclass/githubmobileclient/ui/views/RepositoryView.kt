@@ -33,6 +33,7 @@ import tech.kts.metaclass.githubmobileclient.entities.ProgrammingLanguage
 import tech.kts.metaclass.githubmobileclient.ui.theme.gapSmall
 import tech.kts.metaclass.githubmobileclient.ui.theme.padding
 
+// TODO: Refactor view
 @Composable
 fun RepositoryView(
     repository: GitHubRepository,
@@ -88,6 +89,7 @@ fun RepositoryView(
 private fun RepositoryViewPreview() {
     RepositoryView(
         GitHubRepository(
+            id = 1,
             name = "My first repository",
             description = "Test project",
             language = ProgrammingLanguage.KOTLIN,
