@@ -1,4 +1,4 @@
-package tech.kts.metaclass.githubmobileclient.ui.main
+package tech.kts.metaclass.githubmobileclient.ui.screens.main
 
 import tech.kts.metaclass.githubmobileclient.entities.GitHubRepository
 

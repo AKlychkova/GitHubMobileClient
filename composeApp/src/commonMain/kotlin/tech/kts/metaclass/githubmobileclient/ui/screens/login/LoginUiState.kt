@@ -1,4 +1,4 @@
-package tech.kts.metaclass.githubmobileclient.ui.login
+package tech.kts.metaclass.githubmobileclient.ui.screens.login
 
 import androidx.compose.runtime.Immutable
 

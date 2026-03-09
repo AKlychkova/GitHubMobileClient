@@ -1,24 +1,18 @@
 package tech.kts.metaclass.githubmobileclient.ui
 
-import androidx.compose.foundation.layout.WindowInsets
-import androidx.compose.foundation.layout.asPaddingValues
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.safeDrawing
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.*
-import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import tech.kts.metaclass.githubmobileclient.ui.login.LoginScreen
-import tech.kts.metaclass.githubmobileclient.ui.main.MainScreen
-import tech.kts.metaclass.githubmobileclient.ui.start.StartScreen
+import tech.kts.metaclass.githubmobileclient.ui.screens.login.LoginScreen
+import tech.kts.metaclass.githubmobileclient.ui.screens.main.MainScreen
+import tech.kts.metaclass.githubmobileclient.ui.screens.start.StartScreen
+import tech.kts.metaclass.githubmobileclient.ui.theme.GitHubMaterialTheme
 
 @Composable
 fun App() {
-    MaterialTheme {
+    GitHubMaterialTheme {
         RootNavHost()
     }
 }
@@ -28,9 +22,6 @@ private fun RootNavHost(navController: NavHostController = rememberNavController
     NavHost(
         navController = navController,
         startDestination = Destination.Start,
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(WindowInsets.safeDrawing.asPaddingValues())
     ) {
         composable<Destination.Start> {
             StartScreen(
@@ -38,7 +29,6 @@ private fun RootNavHost(navController: NavHostController = rememberNavController
                     navController.navigate(route = Destination.Login)
                 }
             )
-
         }
         composable<Destination.Login> {
             LoginScreen(

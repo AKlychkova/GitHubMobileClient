@@ -1,4 +1,4 @@
-package tech.kts.metaclass.githubmobileclient.ui.login
+package tech.kts.metaclass.githubmobileclient.ui.screens.login
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
