@@ -25,16 +25,18 @@ import tech.kts.metaclass.githubmobileclient.ui.theme.GitHubMaterialTheme
 import tech.kts.metaclass.githubmobileclient.ui.theme.gapLarge
 import tech.kts.metaclass.githubmobileclient.ui.theme.gapMedium
 import tech.kts.metaclass.githubmobileclient.ui.theme.gapSmall
-import tech.kts.metaclass.githubmobileclient.ui.theme.padding
+import tech.kts.metaclass.githubmobileclient.ui.theme.paddingMedium
 
 @Composable
 fun StartScreen(
     onNavigateToLogin: () -> Unit
 ) {
-    Scaffold(modifier = Modifier.fillMaxSize()) { contentPadding ->
+    Scaffold(
+        modifier = Modifier.fillMaxSize()
+    ) { contentPadding ->
         Column(
             modifier = Modifier
-                .padding(horizontal = padding)
+                .padding(horizontal = paddingMedium)
                 .padding(contentPadding)
                 .fillMaxSize(),
             horizontalAlignment = Alignment.CenterHorizontally,

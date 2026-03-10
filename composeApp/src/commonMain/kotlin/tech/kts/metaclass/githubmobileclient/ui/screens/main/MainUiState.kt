@@ -5,5 +5,8 @@ import tech.kts.metaclass.githubmobileclient.entities.GitHubRepository
 
 @Immutable
 data class MainUiState(
-    val filteredItems: List<GitHubRepository> = emptyList()
+    val isLoading: Boolean = false,
+    val searchQuery: String = "",
+    val repositories: List<GitHubRepository> = emptyList(),
+    val error: String? = null
 )

@@ -31,7 +31,7 @@ import tech.kts.metaclass.githubmobileclient.entities.GitHubRepository
 import tech.kts.metaclass.githubmobileclient.entities.Owner
 import tech.kts.metaclass.githubmobileclient.entities.ProgrammingLanguage
 import tech.kts.metaclass.githubmobileclient.ui.theme.gapSmall
-import tech.kts.metaclass.githubmobileclient.ui.theme.padding
+import tech.kts.metaclass.githubmobileclient.ui.theme.paddingMedium
 
 // TODO: Refactor view
 @Composable
@@ -47,7 +47,7 @@ fun RepositoryView(
             verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier
                 .wrapContentSize()
-                .padding(padding)
+                .padding(paddingMedium)
         ) {
             AsyncImage(
                 model = ImageRequest.Builder(LocalPlatformContext.current)
@@ -70,7 +70,7 @@ fun RepositoryView(
                 horizontalAlignment = Alignment.Start,
                 verticalArrangement = Arrangement.Center,
                 modifier = Modifier
-                    .padding(start = padding)
+                    .padding(start = paddingMedium)
             ) {
                 Text(
                     text = repository.name,

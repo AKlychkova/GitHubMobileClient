@@ -48,6 +48,11 @@ kotlin {
             implementation(libs.coil.compose)
             implementation(libs.coil.network)
             implementation(libs.ktor.core)
+            implementation(libs.ktor.serialization.json)
+            implementation(libs.ktor.content.negotiation)
+            implementation(libs.ktor.logging)
+            implementation(libs.napier)
+            implementation(libs.material.icons.core)
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)
