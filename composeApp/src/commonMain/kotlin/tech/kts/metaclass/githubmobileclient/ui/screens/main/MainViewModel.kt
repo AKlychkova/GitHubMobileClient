@@ -16,7 +16,7 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import tech.kts.metaclass.githubmobileclient.data.repositories.GitHubRepositoryRepository
 import tech.kts.metaclass.githubmobileclient.data.repositories.GitHubRepositoryRepositoryImpl
-import kotlin.coroutines.cancellation.CancellationException
+import tech.kts.metaclass.githubmobileclient.entities.GitHubRepository
 
 @OptIn(FlowPreview::class)
 class MainViewModel(
@@ -50,23 +50,25 @@ class MainViewModel(
             _state.update { it.copy(isLoading = true, error = null) }
 
             repository.searchRepositories(query).fold(
-                onSuccess = { repositories ->
-                    _state.update { it.copy(isLoading = false, repositories = repositories) }
-                },
-                onFailure = { e ->
-                    if (e is CancellationException) throw e
-                    Napier.e("Search error", e, tag = "Network")
-                    _state.update {
-                        it.copy(
-                            isLoading = false,
-                            repositories = emptyList(),
-                            error = e.message ?: "Unknown error"
-                        )
-                    }
-                }
+                onSuccess = ::onSearchSuccess,
+                onFailure = ::onSearchFailer
             )
 
         }
     }
 
+    fun onSearchSuccess(repositories: List<GitHubRepository>) {
+        _state.update { it.copy(isLoading = false, repositories = repositories) }
+    }
+
+    fun onSearchFailer(throwable: Throwable) {
+        Napier.e("Search error", throwable, tag = "Network")
+        _state.update {
+            it.copy(
+                isLoading = false,
+                repositories = emptyList(),
+                error = throwable.message ?: "Unknown error"
+            )
+        }
+    }
 }

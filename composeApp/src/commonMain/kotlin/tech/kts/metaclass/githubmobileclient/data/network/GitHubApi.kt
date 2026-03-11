@@ -7,13 +7,13 @@ import io.ktor.client.request.parameter
 import tech.kts.metaclass.githubmobileclient.data.network.models.ApiGitHubRepository
 import tech.kts.metaclass.githubmobileclient.data.network.models.ApiItemsWrapper
 
-interface GitHubRemoteDataSource {
+interface GitHubApi {
     suspend fun searchRepositories(query: String): ApiItemsWrapper<ApiGitHubRepository>
 }
 
-class GitHubRemoteDataSourceImpl(
+class GitHubApiImpl(
     private val httpClient: HttpClient
-) : GitHubRemoteDataSource {
+) : GitHubApi {
 
     override suspend fun searchRepositories(query: String): ApiItemsWrapper<ApiGitHubRepository> {
         return httpClient.get("search/repositories") {
