@@ -187,6 +187,7 @@ private fun MainScreenPreview(
         language = ProgrammingLanguage.KOTLIN,
         stars = 5,
         owner = Owner(
+            id = 1L,
             username = "AKlychkova",
             avatarUrl = "https://avatars.githubusercontent.com/u/90353866?v=4"
         )

@@ -3,9 +3,7 @@ package tech.kts.metaclass.githubmobileclient.ui.screens.main
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import io.github.aakira.napier.Napier
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.FlowPreview
-import kotlinx.coroutines.IO
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -16,14 +14,13 @@ import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
-import tech.kts.metaclass.githubmobileclient.data.repositories.GitHubRepositoriesRepository
-import tech.kts.metaclass.githubmobileclient.data.repositories.GitHubRepositoriesRepositoryImpl
+import tech.kts.metaclass.githubmobileclient.data.repositories.GitHubRepositoryRepository
+import tech.kts.metaclass.githubmobileclient.data.repositories.GitHubRepositoryRepositoryImpl
 import kotlin.coroutines.cancellation.CancellationException
 
 @OptIn(FlowPreview::class)
 class MainViewModel(
-    private val repository: GitHubRepositoriesRepository = GitHubRepositoriesRepositoryImpl() // TODO: вынести в di контейнер
+    private val repository: GitHubRepositoryRepository = GitHubRepositoryRepositoryImpl() // TODO: вынести в di контейнер
 ) : ViewModel() {
     private val searchQueryFlow = MutableStateFlow("")
     private var currentSearchJob: Job? = null
@@ -51,23 +48,25 @@ class MainViewModel(
         currentSearchJob?.cancel()
         currentSearchJob = viewModelScope.launch {
             _state.update { it.copy(isLoading = true, error = null) }
-            runCatching {
-                withContext(Dispatchers.IO) {
-                    repository.searchRepositories(query)
+
+            repository.searchRepositories(query).fold(
+                onSuccess = { repositories ->
+                    _state.update { it.copy(isLoading = false, repositories = repositories) }
+                },
+                onFailure = { e ->
+                    if (e is CancellationException) throw e
+                    Napier.e("Search error", e, tag = "Network")
+                    _state.update {
+                        it.copy(
+                            isLoading = false,
+                            repositories = emptyList(),
+                            error = e.message ?: "Unknown error"
+                        )
+                    }
                 }
-            }.onSuccess { repositories ->
-                _state.update { it.copy(isLoading = false, repositories = repositories) }
-            }.onFailure { e ->
-                if (e is CancellationException) throw e
-                Napier.e("Search error", e, tag = "Network")
-                _state.update {
-                    it.copy(
-                        isLoading = false,
-                        repositories = emptyList(),
-                        error = e.message ?: "Unknown error"
-                    )
-                }
-            }
+            )
+
         }
     }
+
 }
