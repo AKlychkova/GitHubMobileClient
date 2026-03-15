@@ -78,7 +78,7 @@ fun RepositoryView(
                 )
                 Text('@' + repository.owner.username)
                 Spacer(Modifier.height(gapSmall))
-                Text(repository.description)
+                Text(repository.description ?: "")
             }
         }
     }

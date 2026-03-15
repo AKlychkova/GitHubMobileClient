@@ -10,5 +10,5 @@ data class ApiOwner (
     @SerialName("login")
     val username: String,
     @SerialName("avatar_url")
-    val avatarUrl: String
+    val avatarUrl: String?
 )

@@ -10,9 +10,9 @@ data class ApiGitHubRepository(
     @SerialName("name")
     val name: String,
     @SerialName("description")
-    val description: String,
+    val description: String?,
     @SerialName("language")
-    val language: String,
+    val language: String?,
     @SerialName("stargazers_count")
     val stars: Int,
     @SerialName("owner")

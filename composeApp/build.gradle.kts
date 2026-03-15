@@ -24,12 +24,13 @@ kotlin {
             isStatic = true
         }
     }
-    
+
     sourceSets {
         androidMain.dependencies {
             implementation(libs.compose.uiToolingPreview)
             implementation(libs.androidx.activity.compose)
             implementation(libs.ktor.android)
+            implementation(libs.appauth)
         }
         iosMain.dependencies {
             implementation(libs.ktor.ios)
@@ -70,6 +71,8 @@ android {
         targetSdk = libs.versions.android.targetSdk.get().toInt()
         versionCode = 1
         versionName = "1.0"
+
+        manifestPlaceholders["appAuthRedirectScheme"] = "tech.kts.metaclass.oauth"
     }
     packaging {
         resources {

@@ -18,7 +18,7 @@ class ApiGitHubRepositoryMapper(
         )
     }
 
-    private fun mapLanguage(rawLanguage: String): ProgrammingLanguage {
+    private fun mapLanguage(rawLanguage: String?): ProgrammingLanguage {
         return when(rawLanguage) {
             "Kotlin" -> ProgrammingLanguage.KOTLIN
             "Java" -> ProgrammingLanguage.JAVA
