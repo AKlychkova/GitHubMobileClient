@@ -26,16 +26,20 @@ import tech.kts.metaclass.githubmobileclient.ui.views.RepositoryView
 
 @Composable
 fun MainScreen(
-    viewModel: MainViewModel = viewModel { MainViewModel() }
+    viewModel: MainViewModel = viewModel { MainViewModel() },
+    modifier: Modifier = Modifier
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
 
-    MainView(state)
+    MainView(state, modifier)
 }
 
 @Composable
-private fun MainView(state: MainUiState) {
-    Scaffold(modifier = Modifier.fillMaxSize()) { contentPadding ->
+private fun MainView(
+    state: MainUiState,
+    modifier: Modifier = Modifier
+) {
+    Scaffold(modifier = modifier.fillMaxSize()) { contentPadding ->
         LazyColumn(
             modifier = Modifier
                 .padding(horizontal = padding)

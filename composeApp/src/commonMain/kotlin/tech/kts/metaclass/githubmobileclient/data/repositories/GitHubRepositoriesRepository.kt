@@ -6,11 +6,11 @@ import tech.kts.metaclass.githubmobileclient.entities.ProgrammingLanguage
 
 
 interface GitHubRepositoriesRepository {
-    fun getRepositories() : List<GitHubRepository>
+    suspend fun getRepositories() : List<GitHubRepository>
 }
 
 class GitHubRepositoriesRepositoryImpl : GitHubRepositoriesRepository {
-    override fun getRepositories(): List<GitHubRepository> {
+    override suspend fun getRepositories(): List<GitHubRepository> {
         return listOf(
             GitHubRepository(
                 name = "My first repository",

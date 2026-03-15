@@ -53,6 +53,7 @@ import tech.kts.metaclass.githubmobileclient.ui.theme.padding
 @Composable
 fun LoginScreen(
     viewModel: LoginViewModel = viewModel { LoginViewModel() },
+    modifier: Modifier = Modifier,
     onNavigateToMain: () -> Unit
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
@@ -70,7 +71,8 @@ fun LoginScreen(
         onUsernameChange = viewModel::onUsernameChange,
         onPasswordChange = viewModel::onPasswordChange,
         onPasswordVisibilityClick = viewModel::onPasswordVisibilityClick,
-        onLoginClick = viewModel::onLoginClick
+        onLoginClick = viewModel::onLoginClick,
+        modifier = modifier
     )
 }
 
@@ -80,9 +82,10 @@ private fun LoginView(
     onUsernameChange: (String) -> Unit,
     onPasswordChange: (String) -> Unit,
     onPasswordVisibilityClick: () -> Unit,
-    onLoginClick: () -> Unit
+    onLoginClick: () -> Unit,
+    modifier: Modifier = Modifier
 ) {
-    Scaffold(modifier = Modifier.fillMaxSize()) { contentPadding ->
+    Scaffold(modifier = modifier.fillMaxSize()) { contentPadding ->
         Column(
             modifier = Modifier
                 .padding(horizontal = padding)

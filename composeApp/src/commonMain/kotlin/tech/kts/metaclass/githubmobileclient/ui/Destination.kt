@@ -5,10 +5,10 @@ import kotlinx.serialization.Serializable
 @Serializable
 sealed interface Destination {
     @Serializable
-    object Start
+    object Start : Destination
 
     @Serializable
-    object Login
+    object Login : Destination
 
     @Serializable
     data object Main : Destination

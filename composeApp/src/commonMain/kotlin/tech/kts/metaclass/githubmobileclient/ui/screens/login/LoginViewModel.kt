@@ -16,7 +16,7 @@ import tech.kts.metaclass.githubmobileclient.data.repositories.LoginRepository
 import tech.kts.metaclass.githubmobileclient.data.repositories.LoginRepositoryImpl
 
 class LoginViewModel(
-    val repository: LoginRepository = LoginRepositoryImpl() // TODO: вынести в di контейнер
+    private val repository: LoginRepository = LoginRepositoryImpl() // TODO: вынести в di контейнер
 ) : ViewModel() {
     private val _state = MutableStateFlow(LoginUiState.Initial)
     val state: StateFlow<LoginUiState> = _state.asStateFlow()
