@@ -5,6 +5,8 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import io.github.aakira.napier.DebugAntilog
+import io.github.aakira.napier.Napier
 import tech.kts.metaclass.githubmobileclient.ui.screens.login.LoginScreen
 import tech.kts.metaclass.githubmobileclient.ui.screens.main.MainScreen
 import tech.kts.metaclass.githubmobileclient.ui.screens.start.StartScreen
@@ -12,6 +14,10 @@ import tech.kts.metaclass.githubmobileclient.ui.theme.GitHubMaterialTheme
 
 @Composable
 fun App() {
+    LaunchedEffect(Unit) {
+        Napier.base(DebugAntilog())
+    }
+
     GitHubMaterialTheme {
         RootNavHost()
     }
