@@ -20,6 +20,7 @@ ktor = "3.4.0"
 napier = "2.7.1"
 material-icons = "1.7.3"
 appauth = "0.11.1"
+datastore = "1.2.1"
 
 [libraries]
 kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotlin" }
@@ -52,6 +53,7 @@ ktor-serialization-json = { module = "io.ktor:ktor-serialization-kotlinx-json", 
 ktor-logging = { module = "io.ktor:ktor-client-logging", version.ref = "ktor" }
 napier = { module = "io.github.aakira:napier", version.ref = "napier" }
 appauth = { module = "net.openid:appauth", version.ref = "appauth" }
+datastore-preferences = { module = "androidx.datastore:datastore-preferences", version.ref = "datastore" }
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }

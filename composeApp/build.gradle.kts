@@ -54,6 +54,7 @@ kotlin {
             implementation(libs.ktor.logging)
             implementation(libs.napier)
             implementation(libs.material.icons.core)
+            implementation(libs.datastore.preferences)
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)
