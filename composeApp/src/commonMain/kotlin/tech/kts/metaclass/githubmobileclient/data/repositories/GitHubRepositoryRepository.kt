@@ -3,13 +3,17 @@ package tech.kts.metaclass.githubmobileclient.data.repositories
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
 import kotlinx.coroutines.withContext
+import tech.kts.metaclass.githubmobileclient.data.database.DatabaseProvider
+import tech.kts.metaclass.githubmobileclient.data.database.GitHubRepositoryDao
+import tech.kts.metaclass.githubmobileclient.data.database.UserDao
+import tech.kts.metaclass.githubmobileclient.data.database.mappers.DbGitHubRepositoryMapper
 import tech.kts.metaclass.githubmobileclient.data.network.GitHubApi
 import tech.kts.metaclass.githubmobileclient.data.network.GitHubApiImpl
 import tech.kts.metaclass.githubmobileclient.data.network.Network
 import tech.kts.metaclass.githubmobileclient.data.network.mappers.ApiGitHubRepositoryMapper
-import tech.kts.metaclass.githubmobileclient.data.network.mappers.ApiOwnerMapper
+import tech.kts.metaclass.githubmobileclient.data.network.mappers.ApiUserMapper
 import tech.kts.metaclass.githubmobileclient.entities.GitHubRepository
-import tech.kts.metaclass.githubmobileclient.utils.runSuspendCatching
+import kotlin.coroutines.cancellation.CancellationException
 
 // TODO вынести интерфейс в domain слой, чтобы не было зависимости domain -> data
 interface GitHubRepositoryRepository {
@@ -18,16 +22,43 @@ interface GitHubRepositoryRepository {
 
 class GitHubRepositoryRepositoryImpl(
     private val api: GitHubApi = GitHubApiImpl(Network.httpClient), // TODO: в di контейнер
-    private val mapper: ApiGitHubRepositoryMapper = ApiGitHubRepositoryMapper(ApiOwnerMapper()) // TODO: в di контейнер
+    private val apiMapper: ApiGitHubRepositoryMapper = ApiGitHubRepositoryMapper(ApiUserMapper()), // TODO: в di контейнер
+    private val dbMapper: DbGitHubRepositoryMapper = DbGitHubRepositoryMapper(),
+    private val userDao: UserDao = DatabaseProvider.instance.getUserDao(),
+    private val repositoryDao: GitHubRepositoryDao = DatabaseProvider.instance.getRepositoryDao()
 ) : GitHubRepositoryRepository {
 
-    override suspend fun searchRepositories(query: String): Result<List<GitHubRepository>> {
-        return runSuspendCatching {
-            withContext(Dispatchers.IO) {
-                api.searchRepositories(query)
-                    .items
-                    .map(mapper::toDomainModel)
+    override suspend fun searchRepositories(query: String): Result<List<GitHubRepository>> = withContext(Dispatchers.IO) {
+        try {
+            val remote = api.searchRepositories(query)
+                .items
+                .map(apiMapper::toDomainModel)
+
+            saveToDb(remote)
+            Result.success(remote)
+        } catch (e: CancellationException) {
+            throw e
+        } catch (e: Exception) {
+            val cached = getCached()
+
+            if (cached.isNotEmpty()) {
+                Result.success(cached)
+            } else {
+                Result.failure(e)
             }
         }
+    }
+
+    private suspend fun saveToDb(repos: List<GitHubRepository>) {
+        val (dbRepos, users) = repos.map(dbMapper::toDbModel).unzip()
+
+        userDao.insertUsers(users.distinctBy { it.id })
+        repositoryDao.insertRepositories(dbRepos)
+    }
+
+    private suspend fun getCached(): List<GitHubRepository> {
+        return repositoryDao
+            .getRepositoriesWithUsers()
+            .map(dbMapper::toDomainModel)
     }
 }

@@ -6,5 +6,5 @@ data class GitHubRepository (
     val description: String?,
     val language: ProgrammingLanguage,
     val stars: Int,
-    val owner: Owner
+    val owner: User
 )

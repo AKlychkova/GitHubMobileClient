@@ -28,7 +28,7 @@ import githubmobileclient.composeapp.generated.resources.main_avatar_description
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import tech.kts.metaclass.githubmobileclient.entities.GitHubRepository
-import tech.kts.metaclass.githubmobileclient.entities.Owner
+import tech.kts.metaclass.githubmobileclient.entities.User
 import tech.kts.metaclass.githubmobileclient.entities.ProgrammingLanguage
 import tech.kts.metaclass.githubmobileclient.ui.theme.gapSmall
 import tech.kts.metaclass.githubmobileclient.ui.theme.paddingMedium
@@ -94,7 +94,7 @@ private fun RepositoryViewPreview() {
             description = "Test project",
             language = ProgrammingLanguage.KOTLIN,
             stars = 5,
-            owner = Owner(
+            owner = User(
                 id = 1L,
                 username = "AKlychkova",
                 avatarUrl = "https://avatars.githubusercontent.com/u/90353866?v=4"

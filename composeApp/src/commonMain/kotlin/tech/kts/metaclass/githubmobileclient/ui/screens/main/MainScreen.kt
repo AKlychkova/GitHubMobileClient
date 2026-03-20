@@ -33,7 +33,7 @@ import githubmobileclient.composeapp.generated.resources.main_clear_button_descr
 import githubmobileclient.composeapp.generated.resources.main_search_field_hint
 import org.jetbrains.compose.resources.stringResource
 import tech.kts.metaclass.githubmobileclient.entities.GitHubRepository
-import tech.kts.metaclass.githubmobileclient.entities.Owner
+import tech.kts.metaclass.githubmobileclient.entities.User
 import tech.kts.metaclass.githubmobileclient.entities.ProgrammingLanguage
 import tech.kts.metaclass.githubmobileclient.ui.theme.GitHubMaterialTheme
 import tech.kts.metaclass.githubmobileclient.ui.theme.gapSmall
@@ -186,7 +186,7 @@ private fun MainScreenPreview(
         description = "Test project",
         language = ProgrammingLanguage.KOTLIN,
         stars = 5,
-        owner = Owner(
+        owner = User(
             id = 1L,
             username = "AKlychkova",
             avatarUrl = "https://avatars.githubusercontent.com/u/90353866?v=4"

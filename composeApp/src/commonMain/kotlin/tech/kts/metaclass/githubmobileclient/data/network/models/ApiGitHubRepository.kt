@@ -16,5 +16,5 @@ data class ApiGitHubRepository(
     @SerialName("stargazers_count")
     val stars: Int,
     @SerialName("owner")
-    val owner: ApiOwner
+    val owner: ApiUser
 )

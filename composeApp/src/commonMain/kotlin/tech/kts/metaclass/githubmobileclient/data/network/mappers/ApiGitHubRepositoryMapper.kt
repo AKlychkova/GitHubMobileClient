@@ -5,7 +5,7 @@ import tech.kts.metaclass.githubmobileclient.entities.GitHubRepository
 import tech.kts.metaclass.githubmobileclient.entities.ProgrammingLanguage
 
 class ApiGitHubRepositoryMapper(
-    private val apiOwnerMapper: ApiOwnerMapper
+    private val apiUserMapper: ApiUserMapper
 ) {
     fun toDomainModel(repository: ApiGitHubRepository) : GitHubRepository {
         return GitHubRepository(
@@ -14,7 +14,7 @@ class ApiGitHubRepositoryMapper(
             description = repository.description,
             language = mapLanguage(repository.language),
             stars = repository.stars,
-            owner = apiOwnerMapper.toDomainModel(repository.owner)
+            owner = apiUserMapper.toDomainModel(repository.owner)
         )
     }
 
