@@ -1,0 +1,13 @@
+<resources>
+    <string name="login_hide_password_button">Hide</string>
+    <string name="login_show_password_button">Show</string>
+    <string name="login_password_hint">Password</string>
+    <string name="login_username_hint">Username</string>
+    <string name="login_primary_button">Sign in</string>
+    <string name="login_title">Sign in to GitHub</string>
+    <string name="login_image_description">Github logo</string>
+    <string name="start_primary_button">Sign in to GitHub</string>
+    <string name="start_title">The future of building happens together</string>
+    <string name="start_subtitle">Tools and trends evolve, but collaboration endures. With GitHub, developers, agents, and code come together on one platform.</string>
+    <string name="main_avatar_description">User avatar</string>
+</resources>
