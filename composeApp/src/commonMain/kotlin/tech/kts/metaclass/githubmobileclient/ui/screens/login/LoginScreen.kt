@@ -31,7 +31,6 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.lifecycle.viewmodel.compose.viewModel
 import githubmobileclient.composeapp.generated.resources.GitHub_Invertocat_Black
 import githubmobileclient.composeapp.generated.resources.Res
 import githubmobileclient.composeapp.generated.resources.login_hide_password_button
@@ -43,6 +42,7 @@ import githubmobileclient.composeapp.generated.resources.login_title
 import githubmobileclient.composeapp.generated.resources.login_username_hint
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
+import org.koin.compose.viewmodel.koinViewModel
 import tech.kts.metaclass.githubmobileclient.ui.theme.GitHubMaterialTheme
 import tech.kts.metaclass.githubmobileclient.ui.theme.gapLarge
 import tech.kts.metaclass.githubmobileclient.ui.theme.gapMedium
@@ -52,10 +52,10 @@ import tech.kts.metaclass.githubmobileclient.ui.theme.paddingMedium
 
 @Composable
 fun LoginScreen(
-    viewModel: LoginViewModel = viewModel { LoginViewModel() },
     modifier: Modifier = Modifier,
     onNavigateToMain: () -> Unit
 ) {
+    val viewModel = koinViewModel<LoginViewModel>()
     val state by viewModel.state.collectAsStateWithLifecycle()
 
     LaunchedEffect(Unit) {
