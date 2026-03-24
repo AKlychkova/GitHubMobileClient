@@ -14,7 +14,7 @@ import tech.kts.metaclass.githubmobileclient.utils.runSuspendCatching
 // TODO вынести интерфейс в domain слой, чтобы не было зависимости domain -> data
 interface AuthRepository {
     suspend fun login(): Result<Unit>
-    fun logout()
+    suspend fun logout()
 }
 
 class AuthRepositoryImpl(
@@ -30,9 +30,9 @@ class AuthRepositoryImpl(
         }
     }
 
-//    override fun logout() {
-//        TokenStorage.remove()
-//    }
+    override suspend fun logout() {
+        TokenStorage.clearToken()
+    }
 
     private suspend fun exchangeCodeForToken(code: String, verifier: String?): Result<Unit> =
         runSuspendCatching {

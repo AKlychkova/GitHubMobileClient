@@ -21,6 +21,9 @@ object TokenStorage {
         .map { prefs -> prefs[ACCESS_TOKEN] }
         .first()
 
+    suspend fun clearToken(): Result<Unit> = runSuspendCatching {
+        dataStore.edit { prefs -> prefs.remove(ACCESS_TOKEN) }
+    }
 
     private val ACCESS_TOKEN = stringPreferencesKey("access_token")
 }
