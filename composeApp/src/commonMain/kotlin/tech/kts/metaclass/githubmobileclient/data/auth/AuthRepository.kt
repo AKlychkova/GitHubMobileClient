@@ -10,20 +10,26 @@ import io.ktor.http.Parameters
 import tech.kts.metaclass.githubmobileclient.data.network.Network
 import tech.kts.metaclass.githubmobileclient.utils.runSuspendCatching
 
-class AuthRepository(
+// TODO вынести интерфейс в domain слой, чтобы не было зависимости domain -> data
+interface AuthRepository {
+    suspend fun login(): Result<Unit>
+    fun logout()
+}
+
+class AuthRepositoryImpl(
     private val config: AuthConfig = GitHubAuthConfig,
     private val launcher: AuthLauncher = getAuthLauncher(),
     private val httpClient: HttpClient = Network.authHttpClient
-) {
+): AuthRepository {
 
-    suspend fun login(): Result<Unit> {
+    override suspend fun login(): Result<Unit> {
         return when (val result = launcher.launch(config)) {
             is AuthResult.Success -> exchangeCodeForToken(result.code, result.codeVerifier)
             is AuthResult.Error -> Result.failure(result.cause)
         }
     }
 
-    fun logout() {
+    override fun logout() {
         TokenStorage.remove()
     }
 

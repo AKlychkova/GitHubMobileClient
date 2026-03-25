@@ -13,9 +13,10 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import tech.kts.metaclass.githubmobileclient.data.auth.AuthRepository
+import tech.kts.metaclass.githubmobileclient.data.auth.AuthRepositoryImpl
 
 class LoginViewModel(
-   private val repository: AuthRepository = AuthRepository() // TODO: вынести в di контейнер
+   private val repository: AuthRepository = AuthRepositoryImpl() // TODO: вынести в di контейнер
 ) : ViewModel() {
     private val _state = MutableStateFlow(LoginUiState.Initial)
     val state: StateFlow<LoginUiState> = _state.asStateFlow()

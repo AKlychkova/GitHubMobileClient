@@ -8,5 +8,3 @@ object GitHubAuthConfig: AuthConfig {
     override val clientSecret = "39b1587e61d41c3e4498889779357d3beb78a3fa"
     override val callbackUrl = "tech.kts.metaclass.oauth://github.com/callback"
 }
-
-
