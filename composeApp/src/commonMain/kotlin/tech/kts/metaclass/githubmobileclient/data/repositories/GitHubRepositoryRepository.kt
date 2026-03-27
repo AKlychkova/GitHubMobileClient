@@ -3,15 +3,11 @@ package tech.kts.metaclass.githubmobileclient.data.repositories
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
 import kotlinx.coroutines.withContext
-import tech.kts.metaclass.githubmobileclient.data.database.DatabaseProvider
 import tech.kts.metaclass.githubmobileclient.data.database.GitHubRepositoryDao
 import tech.kts.metaclass.githubmobileclient.data.database.UserDao
 import tech.kts.metaclass.githubmobileclient.data.database.mappers.DbGitHubRepositoryMapper
 import tech.kts.metaclass.githubmobileclient.data.network.GitHubApi
-import tech.kts.metaclass.githubmobileclient.data.network.GitHubApiImpl
-import tech.kts.metaclass.githubmobileclient.data.network.Network
 import tech.kts.metaclass.githubmobileclient.data.network.mappers.ApiGitHubRepositoryMapper
-import tech.kts.metaclass.githubmobileclient.data.network.mappers.ApiUserMapper
 import tech.kts.metaclass.githubmobileclient.entities.GitHubRepository
 import kotlin.coroutines.cancellation.CancellationException
 
@@ -21,11 +17,11 @@ interface GitHubRepositoryRepository {
 }
 
 class GitHubRepositoryRepositoryImpl(
-    private val api: GitHubApi = GitHubApiImpl(Network.httpClient), // TODO: в di контейнер
-    private val apiMapper: ApiGitHubRepositoryMapper = ApiGitHubRepositoryMapper(ApiUserMapper()), // TODO: в di контейнер
-    private val dbMapper: DbGitHubRepositoryMapper = DbGitHubRepositoryMapper(),
-    private val userDao: UserDao = DatabaseProvider.instance.getUserDao(),
-    private val repositoryDao: GitHubRepositoryDao = DatabaseProvider.instance.getRepositoryDao()
+    private val api: GitHubApi,
+    private val apiMapper: ApiGitHubRepositoryMapper,
+    private val dbMapper: DbGitHubRepositoryMapper,
+    private val userDao: UserDao,
+    private val repositoryDao: GitHubRepositoryDao
 ) : GitHubRepositoryRepository {
 
     override suspend fun searchRepositories(query: String): Result<List<GitHubRepository>> =

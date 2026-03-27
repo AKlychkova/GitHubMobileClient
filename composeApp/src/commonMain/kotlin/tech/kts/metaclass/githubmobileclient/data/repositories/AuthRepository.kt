@@ -1,4 +1,4 @@
-package tech.kts.metaclass.githubmobileclient.data.auth
+package tech.kts.metaclass.githubmobileclient.data.repositories
 
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
@@ -7,8 +7,10 @@ import io.ktor.client.request.header
 import io.ktor.client.request.post
 import io.ktor.client.request.setBody
 import io.ktor.http.Parameters
-import tech.kts.metaclass.githubmobileclient.data.network.Network
-import tech.kts.metaclass.githubmobileclient.data.repositories.TokenStorage
+import tech.kts.metaclass.githubmobileclient.data.network.auth.AuthConfig
+import tech.kts.metaclass.githubmobileclient.data.network.auth.AuthResult
+import tech.kts.metaclass.githubmobileclient.data.network.auth.AuthToken
+import tech.kts.metaclass.githubmobileclient.platform.AuthLauncher
 import tech.kts.metaclass.githubmobileclient.utils.runSuspendCatching
 
 // TODO вынести интерфейс в domain слой, чтобы не было зависимости domain -> data
@@ -18,9 +20,10 @@ interface AuthRepository {
 }
 
 class AuthRepositoryImpl(
-    private val config: AuthConfig = GitHubAuthConfig,
-    private val launcher: AuthLauncher = getAuthLauncher(),
-    private val httpClient: HttpClient = Network.authHttpClient
+    private val config: AuthConfig,
+    private val launcher: AuthLauncher,
+    private val httpClient: HttpClient,
+    private val tokenRepository: TokenRepository
 ): AuthRepository {
 
     override suspend fun login(): Result<Unit> {
@@ -31,7 +34,7 @@ class AuthRepositoryImpl(
     }
 
     override suspend fun logout() {
-        TokenStorage.clearToken()
+        tokenRepository.clearToken()
     }
 
     private suspend fun exchangeCodeForToken(code: String, verifier: String?): Result<Unit> =
@@ -46,6 +49,6 @@ class AuthRepositoryImpl(
                     verifier?.let { append("code_verifier", it) }
                 }))
             }.body<AuthToken>()
-            TokenStorage.set(token)
+            tokenRepository.setToken(token.accessToken)
         }
 }

@@ -1,3 +1,3 @@
-package tech.kts.metaclass.githubmobileclient.data.auth
+package tech.kts.metaclass.githubmobileclient.platform
 
 actual fun getAuthLauncher(): AuthLauncher = IosAuthLauncher()

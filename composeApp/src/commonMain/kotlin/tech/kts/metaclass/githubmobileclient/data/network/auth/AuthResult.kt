@@ -1,4 +1,4 @@
-package tech.kts.metaclass.githubmobileclient.data.auth
+package tech.kts.metaclass.githubmobileclient.data.network.auth
 
 sealed class AuthResult {
     data class Success(val code: String, val codeVerifier: String?) : AuthResult()

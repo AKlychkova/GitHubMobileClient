@@ -1,4 +1,4 @@
-package tech.kts.metaclass.githubmobileclient.data.auth
+package tech.kts.metaclass.githubmobileclient.platform
 
 import tech.kts.metaclass.githubmobileclient.authLauncher
 

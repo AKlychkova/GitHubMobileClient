@@ -1,13 +1,16 @@
 package tech.kts.metaclass.githubmobileclient.platform
 
+import android.content.Context
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import tech.kts.metaclass.githubmobileclient.data.database.AppDatabase
 
-actual fun getDatabaseBuilder(): RoomDatabase.Builder<AppDatabase> {
-    val dbFile = appContext.getDatabasePath("github-database.db")
+private const val DATABASE_NAME = "github-database.db"
+
+fun androidDatabaseBuilder(context: Context): RoomDatabase.Builder<AppDatabase> {
+    val dbFile = context.getDatabasePath(DATABASE_NAME)
     return Room.databaseBuilder<AppDatabase>(
-        context = appContext,
+        context = context,
         name = dbFile.absolutePath
     )
 }

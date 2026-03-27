@@ -8,7 +8,7 @@ import platform.Foundation.NSFileManager
 import platform.Foundation.NSUserDomainMask
 import tech.kts.metaclass.githubmobileclient.data.database.AppDatabase
 
-actual fun getDatabaseBuilder(): RoomDatabase.Builder<AppDatabase> {
+fun iosDatabaseBuilder(): RoomDatabase.Builder<AppDatabase> {
     val dbFilePath = documentDirectory() + "/github-database.db"
     return Room.databaseBuilder<AppDatabase>(
         name = dbFilePath,

@@ -7,20 +7,28 @@ import androidx.datastore.preferences.core.edit
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
-import tech.kts.metaclass.githubmobileclient.di.DataStoreProvider
 import tech.kts.metaclass.githubmobileclient.utils.runSuspendCatching
 
-object PreferencesStorage {
-    private val dataStore: DataStore<Preferences> = DataStoreProvider.instance
-    suspend fun shouldShowStartScreen(): Boolean =
+interface PreferencesRepository {
+    suspend fun shouldShowStartScreen(): Boolean
+    suspend fun toggleStartScreen(isShown: Boolean): Result<Unit>
+}
+
+class PreferencesRepositoryImpl(
+    private val dataStore: DataStore<Preferences>
+): PreferencesRepository {
+
+    override suspend fun shouldShowStartScreen(): Boolean =
         dataStore.data
             .map { prefs -> prefs[SHOW_START_SCREEN] ?: true }
             .distinctUntilChanged()
             .first()
 
-    suspend fun toggleStartScreen(isShown: Boolean): Result<Unit> = runSuspendCatching {
+    override suspend fun toggleStartScreen(isShown: Boolean): Result<Unit> = runSuspendCatching {
         dataStore.edit { prefs -> prefs[SHOW_START_SCREEN] = isShown }
     }
 
-    val SHOW_START_SCREEN = booleanPreferencesKey("show_start")
+    companion object {
+        private val SHOW_START_SCREEN = booleanPreferencesKey("show_start")
+    }
 }

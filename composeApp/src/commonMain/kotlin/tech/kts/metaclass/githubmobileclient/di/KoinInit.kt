@@ -10,7 +10,7 @@ fun initKoin(config: KoinAppDeclaration? = null): KoinApplication {
         includes(config)
         modules(
             sharedModule,
-            platformModule
+            platformModule,
         )
     }
 }

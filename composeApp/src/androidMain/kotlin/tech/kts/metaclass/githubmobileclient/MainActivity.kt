@@ -6,7 +6,7 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.Preview
-import tech.kts.metaclass.githubmobileclient.data.auth.AndroidAuthLauncher
+import tech.kts.metaclass.githubmobileclient.platform.AndroidAuthLauncher
 import tech.kts.metaclass.githubmobileclient.platform.initContext
 import tech.kts.metaclass.githubmobileclient.ui.App
 

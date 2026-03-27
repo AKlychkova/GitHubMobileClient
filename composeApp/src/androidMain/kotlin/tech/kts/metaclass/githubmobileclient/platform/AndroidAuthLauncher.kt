@@ -1,4 +1,4 @@
-package tech.kts.metaclass.githubmobileclient.data.auth
+package tech.kts.metaclass.githubmobileclient.platform
 
 import androidx.activity.ComponentActivity
 import androidx.activity.result.contract.ActivityResultContracts
@@ -12,6 +12,8 @@ import net.openid.appauth.AuthorizationResponse
 import net.openid.appauth.AuthorizationService
 import net.openid.appauth.AuthorizationServiceConfiguration
 import net.openid.appauth.ResponseTypeValues
+import tech.kts.metaclass.githubmobileclient.data.network.auth.AuthConfig
+import tech.kts.metaclass.githubmobileclient.data.network.auth.AuthResult
 import kotlin.coroutines.resume
 
 class AndroidAuthLauncher(

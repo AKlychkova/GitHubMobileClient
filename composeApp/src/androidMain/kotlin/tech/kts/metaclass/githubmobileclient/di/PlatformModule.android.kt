@@ -1,11 +1,12 @@
 package tech.kts.metaclass.githubmobileclient.di
 
-import org.koin.dsl.bind
 import org.koin.dsl.module
-import org.koin.plugin.module.dsl.single
 import tech.kts.metaclass.githubmobileclient.platform.AndroidDirectoriesProvider
 import tech.kts.metaclass.githubmobileclient.platform.DirectoriesProvider
+import tech.kts.metaclass.githubmobileclient.platform.androidDatabaseBuilder
 
 actual val platformModule = module {
-    single<AndroidDirectoriesProvider>() bind DirectoriesProvider::class
+    single<DirectoriesProvider> { AndroidDirectoriesProvider(get()) }
+    //single<AndroidAuthLauncher>() bind AuthLauncher::class
+    single { androidDatabaseBuilder(get()) }
 }

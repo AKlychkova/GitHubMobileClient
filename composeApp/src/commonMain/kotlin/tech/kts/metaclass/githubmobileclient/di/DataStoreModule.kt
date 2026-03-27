@@ -5,11 +5,10 @@ import androidx.datastore.preferences.core.PreferenceDataStoreFactory
 import androidx.datastore.preferences.core.Preferences
 import okio.Path.Companion.toPath
 import org.koin.dsl.module
-import org.koin.plugin.module.dsl.create
 import tech.kts.metaclass.githubmobileclient.platform.DirectoriesProvider
 
 val dataStoreModule = module {
-    single { create(::preferencesDataStore) }
+    single<DataStore<Preferences>> { preferencesDataStore(get()) }
 }
 
 fun preferencesDataStore(dirProvider: DirectoriesProvider): DataStore<Preferences> {

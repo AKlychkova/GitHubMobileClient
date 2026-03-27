@@ -1,4 +1,4 @@
-package tech.kts.metaclass.githubmobileclient.data.auth
+package tech.kts.metaclass.githubmobileclient.data.network.auth
 
 object GitHubAuthConfig: AuthConfig {
     override val authUri = "https://github.com/login/oauth/authorize"

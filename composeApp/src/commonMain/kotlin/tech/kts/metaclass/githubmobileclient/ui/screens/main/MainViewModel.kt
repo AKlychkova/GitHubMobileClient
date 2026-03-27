@@ -16,12 +16,11 @@ import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import tech.kts.metaclass.githubmobileclient.data.repositories.GitHubRepositoryRepository
-import tech.kts.metaclass.githubmobileclient.data.repositories.GitHubRepositoryRepositoryImpl
 import tech.kts.metaclass.githubmobileclient.entities.GitHubRepository
 
 @OptIn(FlowPreview::class)
 class MainViewModel(
-    private val repository: GitHubRepositoryRepository = GitHubRepositoryRepositoryImpl() // TODO: вынести в di контейнер
+    private val repository: GitHubRepositoryRepository
 ) : ViewModel() {
     private val searchQueryFlow = MutableStateFlow("")
     private var currentSearchJob: Job? = null

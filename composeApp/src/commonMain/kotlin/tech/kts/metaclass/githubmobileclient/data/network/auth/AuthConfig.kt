@@ -1,4 +1,4 @@
-package tech.kts.metaclass.githubmobileclient.data.auth
+package tech.kts.metaclass.githubmobileclient.data.network.auth
 
 interface AuthConfig {
     val authUri: String

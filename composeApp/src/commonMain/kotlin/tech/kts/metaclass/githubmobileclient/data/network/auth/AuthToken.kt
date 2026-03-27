@@ -1,4 +1,4 @@
-package tech.kts.metaclass.githubmobileclient.data.auth
+package tech.kts.metaclass.githubmobileclient.data.network.auth
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
@@ -7,8 +7,4 @@ import kotlinx.serialization.Serializable
 data class AuthToken(
     @SerialName("access_token")
     val accessToken: String,
-    @SerialName("scope")
-    val scope: String,
-    @SerialName("token_type")
-    val tokenType: String
 )
