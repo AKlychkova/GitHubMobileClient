@@ -6,18 +6,18 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.Preview
-import tech.kts.metaclass.githubmobileclient.platform.AndroidAuthLauncher
-import tech.kts.metaclass.githubmobileclient.platform.initContext
+import org.koin.android.ext.android.inject
+import tech.kts.metaclass.githubmobileclient.platform.AndroidAuthRepository
 import tech.kts.metaclass.githubmobileclient.ui.App
+import kotlin.getValue
 
-var authLauncher: AndroidAuthLauncher? = null
+class MainActivity : ComponentActivity(){
+    private val authRepository: AndroidAuthRepository by inject()
 
-class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         enableEdgeToEdge()
         super.onCreate(savedInstanceState)
-        authLauncher = AndroidAuthLauncher(this)
-        initContext(this)
+        authRepository.registerCaller(this)
         setContent {
             App()
         }
@@ -25,8 +25,7 @@ class MainActivity : ComponentActivity() {
 
     override fun onDestroy() {
         super.onDestroy()
-        authLauncher?.dispose()
-        authLauncher = null
+        authRepository.dispose()
     }
 }
 

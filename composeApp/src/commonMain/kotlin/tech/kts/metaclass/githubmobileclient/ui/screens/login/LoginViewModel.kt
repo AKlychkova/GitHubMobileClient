@@ -12,7 +12,7 @@ import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import tech.kts.metaclass.githubmobileclient.data.repositories.AuthRepository
+import tech.kts.metaclass.githubmobileclient.platform.AuthRepository
 
 class LoginViewModel(
    private val repository: AuthRepository
