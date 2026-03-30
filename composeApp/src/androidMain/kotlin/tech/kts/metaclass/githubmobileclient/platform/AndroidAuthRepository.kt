@@ -7,7 +7,8 @@ import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.browser.customtabs.CustomTabsIntent
 import androidx.core.net.toUri
-import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.suspendCancellableCoroutine
 import net.openid.appauth.AuthorizationException
 import net.openid.appauth.AuthorizationRequest
@@ -29,7 +30,7 @@ class AndroidAuthRepository(
 ) : AuthRepository {
 
     private val authService = AuthorizationService(context)
-    private val tokenRequestChannel = Channel<Result<TokenRequest>>(capacity = 1)
+    private val tokenRequestFlow = MutableSharedFlow<Result<TokenRequest>>(extraBufferCapacity = 1)
     private var launcher: ActivityResultLauncher<Intent>? = null
 
     fun registerCaller(caller: ActivityResultCaller) {
@@ -53,7 +54,6 @@ class AndroidAuthRepository(
 
     fun dispose() {
         authService.dispose()
-        tokenRequestChannel.close()
     }
 
     private suspend fun getCode(): Result<TokenRequest> {
@@ -65,7 +65,7 @@ class AndroidAuthRepository(
         )
         launcher?.launch(openAuthPageIntent) ?: return Result.failure(IllegalStateException("Launcher has not been assigned"))
 
-        return tokenRequestChannel.receive()
+        return tokenRequestFlow.first()
     }
 
     private suspend fun exchangeCodeForToken(
@@ -107,7 +107,7 @@ class AndroidAuthRepository(
         val response  = AuthorizationResponse.fromIntent(intent)
         val exception = AuthorizationException.fromIntent(intent)
 
-        tokenRequestChannel.trySend(
+        tokenRequestFlow.tryEmit(
             when {
                 response != null -> Result.success(response.createTokenExchangeRequest())
                 exception != null -> Result.failure(exception)
