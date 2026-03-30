@@ -12,14 +12,14 @@ import io.ktor.http.ContentType
 import io.ktor.http.contentType
 import io.ktor.serialization.kotlinx.json.json
 import kotlinx.serialization.json.Json
-import tech.kts.metaclass.githubmobileclient.data.auth.TokenStorage
+import tech.kts.metaclass.githubmobileclient.data.repositories.TokenStorage
 
 object Network {
     private const val GITHUB_API_VERSION = "2022-11-28"
     private val AuthPlugin = createClientPlugin("AuthPlugin") {
         onRequest {
             request, _ ->
-            val token = TokenStorage.get()?.accessToken
+            val token = TokenStorage.get()
             if(token != null) {
                 request.headers.append("Authorization", "Bearer $token")
             }

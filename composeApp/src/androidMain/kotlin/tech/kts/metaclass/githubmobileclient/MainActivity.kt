@@ -7,6 +7,7 @@ import androidx.activity.enableEdgeToEdge
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.Preview
 import tech.kts.metaclass.githubmobileclient.data.auth.AndroidAuthLauncher
+import tech.kts.metaclass.githubmobileclient.platform.initContext
 import tech.kts.metaclass.githubmobileclient.ui.App
 
 var authLauncher: AndroidAuthLauncher? = null
@@ -16,6 +17,7 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         super.onCreate(savedInstanceState)
         authLauncher = AndroidAuthLauncher(this)
+        initContext(this)
         setContent {
             App()
         }

@@ -16,6 +16,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.lifecycle.viewmodel.compose.viewModel
 import githubmobileclient.composeapp.generated.resources.Res
 import githubmobileclient.composeapp.generated.resources.start_primary_button
 import githubmobileclient.composeapp.generated.resources.start_subtitle
@@ -29,6 +30,7 @@ import tech.kts.metaclass.githubmobileclient.ui.theme.paddingMedium
 
 @Composable
 fun StartScreen(
+    viewModel: StartViewModel = viewModel { StartViewModel() },
     onNavigateToLogin: () -> Unit
 ) {
     Scaffold(
@@ -58,7 +60,10 @@ fun StartScreen(
             Spacer(modifier = Modifier.weight(1f))
 
             Button(
-                onClick = onNavigateToLogin,
+                onClick = {
+                    viewModel.disableStartScreen()
+                    onNavigateToLogin()
+                },
                 modifier = Modifier
                     .fillMaxWidth(),
                 shape = MaterialTheme.shapes.small

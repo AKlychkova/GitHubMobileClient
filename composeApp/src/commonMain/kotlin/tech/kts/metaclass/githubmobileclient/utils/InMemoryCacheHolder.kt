@@ -9,7 +9,7 @@ class InMemoryCacheHolder<T> {
 
     fun get(): T? = field
 
-    fun remove() {
+    fun clear() {
         field = null
     }
 }

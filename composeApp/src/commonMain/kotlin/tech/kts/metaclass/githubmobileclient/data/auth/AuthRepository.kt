@@ -8,12 +8,13 @@ import io.ktor.client.request.post
 import io.ktor.client.request.setBody
 import io.ktor.http.Parameters
 import tech.kts.metaclass.githubmobileclient.data.network.Network
+import tech.kts.metaclass.githubmobileclient.data.repositories.TokenStorage
 import tech.kts.metaclass.githubmobileclient.utils.runSuspendCatching
 
 // TODO вынести интерфейс в domain слой, чтобы не было зависимости domain -> data
 interface AuthRepository {
     suspend fun login(): Result<Unit>
-    fun logout()
+    suspend fun logout()
 }
 
 class AuthRepositoryImpl(
@@ -29,21 +30,22 @@ class AuthRepositoryImpl(
         }
     }
 
-    override fun logout() {
-        TokenStorage.remove()
+    override suspend fun logout() {
+        TokenStorage.clearToken()
     }
 
-    private suspend fun exchangeCodeForToken(code: String, verifier: String?) = runSuspendCatching {
-        val token = httpClient.post(config.tokenUri) {
-            header("Accept", "application/json")
-            setBody(FormDataContent(Parameters.build {
-                append("client_id", config.clientId)
-                append("client_secret", config.clientSecret)
-                append("code", code)
-                append("redirect_uri", config.callbackUrl)
-                verifier?.let { append("code_verifier", it) }
-            }))
-        }.body<AuthToken>()
-        TokenStorage.set(token)
-    }
+    private suspend fun exchangeCodeForToken(code: String, verifier: String?): Result<Unit> =
+        runSuspendCatching {
+            val token = httpClient.post(config.tokenUri) {
+                header("Accept", "application/json")
+                setBody(FormDataContent(Parameters.build {
+                    append("client_id", config.clientId)
+                    append("client_secret", config.clientSecret)
+                    append("code", code)
+                    append("redirect_uri", config.callbackUrl)
+                    verifier?.let { append("code_verifier", it) }
+                }))
+            }.body<AuthToken>()
+            TokenStorage.set(token)
+        }
 }
