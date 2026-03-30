@@ -48,7 +48,7 @@ import tech.kts.metaclass.githubmobileclient.ui.theme.gapLarge
 import tech.kts.metaclass.githubmobileclient.ui.theme.gapMedium
 import tech.kts.metaclass.githubmobileclient.ui.theme.gapSmall
 import tech.kts.metaclass.githubmobileclient.ui.theme.iconPadding
-import tech.kts.metaclass.githubmobileclient.ui.theme.padding
+import tech.kts.metaclass.githubmobileclient.ui.theme.paddingMedium
 
 @Composable
 fun LoginScreen(
@@ -85,10 +85,12 @@ private fun LoginView(
     onLoginClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    Scaffold(modifier = modifier.fillMaxSize()) { contentPadding ->
+    Scaffold(
+        modifier = modifier.fillMaxSize()
+    ) { contentPadding ->
         Column(
             modifier = Modifier
-                .padding(horizontal = padding)
+                .padding(horizontal = paddingMedium)
                 .padding(contentPadding)
                 .fillMaxSize(),
             horizontalAlignment = Alignment.CenterHorizontally,

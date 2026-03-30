@@ -2,7 +2,7 @@ package tech.kts.metaclass.githubmobileclient.data.repositories
 
 import kotlin.random.Random
 
-// ??? Стоит потом вынести интерфейс в domain слой, чтобы не было зависимости domain -> data ???
+// TODO вынести интерфейс в domain слой, чтобы не было зависимости domain -> data
 interface LoginRepository {
     suspend fun login(username: String, password: String) : Result<Unit>
 }

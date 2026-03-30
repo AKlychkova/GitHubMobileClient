@@ -6,16 +6,25 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.Preview
+import tech.kts.metaclass.githubmobileclient.data.auth.AndroidAuthLauncher
 import tech.kts.metaclass.githubmobileclient.ui.App
+
+var authLauncher: AndroidAuthLauncher? = null
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         enableEdgeToEdge()
         super.onCreate(savedInstanceState)
-
+        authLauncher = AndroidAuthLauncher(this)
         setContent {
             App()
         }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        authLauncher?.dispose()
+        authLauncher = null
     }
 }
 
