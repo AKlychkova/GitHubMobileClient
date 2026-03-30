@@ -28,32 +28,33 @@ class GitHubRepositoryRepositoryImpl(
     private val repositoryDao: GitHubRepositoryDao = DatabaseProvider.instance.getRepositoryDao()
 ) : GitHubRepositoryRepository {
 
-    override suspend fun searchRepositories(query: String): Result<List<GitHubRepository>> = withContext(Dispatchers.IO) {
-        try {
-            val remote = api.searchRepositories(query)
-                .items
-                .map(apiMapper::toDomainModel)
+    override suspend fun searchRepositories(query: String): Result<List<GitHubRepository>> =
+        withContext(Dispatchers.IO) {
+            try {
+                val remote = api.searchRepositories(query)
+                    .items
+                    .map(apiMapper::toDomainModel)
 
-            saveToDb(remote)
-            Result.success(remote)
-        } catch (e: CancellationException) {
-            throw e
-        } catch (e: Exception) {
-            val cached = getCached()
+                saveToDb(remote)
+                Result.success(remote)
+            } catch (e: CancellationException) {
+                throw e
+            } catch (e: Exception) {
+                val cached = getCached()
 
-            if (cached.isNotEmpty()) {
-                Result.success(cached)
-            } else {
-                Result.failure(e)
+                if (cached.isNotEmpty()) {
+                    Result.success(cached)
+                } else {
+                    Result.failure(e)
+                }
             }
         }
-    }
 
     private suspend fun saveToDb(repos: List<GitHubRepository>) {
-        val (dbRepos, users) = repos.map(dbMapper::toDbModel).unzip()
+        val dbModels = repos.map(dbMapper::toDbModel)
 
-        userDao.insertUsers(users.distinctBy { it.id })
-        repositoryDao.insertRepositories(dbRepos)
+        userDao.insertUsers(dbModels.map { it.user }.distinctBy { it.id })
+        repositoryDao.insertRepositories(dbModels.map { it.repository })
     }
 
     private suspend fun getCached(): List<GitHubRepository> {

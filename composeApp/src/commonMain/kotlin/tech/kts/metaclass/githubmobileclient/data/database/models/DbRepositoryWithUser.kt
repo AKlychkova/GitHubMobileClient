@@ -3,7 +3,7 @@ package tech.kts.metaclass.githubmobileclient.data.database.models
 import androidx.room.Embedded
 import androidx.room.Relation
 
-data class RepositoryWithUser(
+data class DbRepositoryWithUser(
     @Embedded val repository: DbGitHubRepository,
 
     @Relation(

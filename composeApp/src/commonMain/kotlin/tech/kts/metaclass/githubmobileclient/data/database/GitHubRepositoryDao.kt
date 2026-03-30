@@ -6,7 +6,7 @@ import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Transaction
 import tech.kts.metaclass.githubmobileclient.data.database.models.DbGitHubRepository
-import tech.kts.metaclass.githubmobileclient.data.database.models.RepositoryWithUser
+import tech.kts.metaclass.githubmobileclient.data.database.models.DbRepositoryWithUser
 
 @Dao
 interface GitHubRepositoryDao {
@@ -16,7 +16,7 @@ interface GitHubRepositoryDao {
 
     @Transaction
     @Query("SELECT * FROM repositories")
-    suspend fun getRepositoriesWithUsers(): List<RepositoryWithUser>
+    suspend fun getRepositoriesWithUsers(): List<DbRepositoryWithUser>
 
     @Query("DELETE FROM repositories")
     suspend fun clearRepositories()
