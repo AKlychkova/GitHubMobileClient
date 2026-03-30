@@ -7,6 +7,7 @@ import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.browser.customtabs.CustomTabsIntent
 import androidx.core.net.toUri
+import kotlinx.coroutines.channels.BufferOverflow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.suspendCancellableCoroutine
@@ -21,6 +22,7 @@ import net.openid.appauth.TokenRequest
 import tech.kts.metaclass.githubmobileclient.data.network.auth.AuthConfig
 import tech.kts.metaclass.githubmobileclient.data.repositories.TokenRepository
 import tech.kts.metaclass.githubmobileclient.utils.runSuspendCatching
+import kotlin.coroutines.cancellation.CancellationException
 import kotlin.coroutines.resume
 
 class AndroidAuthRepository(
@@ -30,7 +32,10 @@ class AndroidAuthRepository(
 ) : AuthRepository {
 
     private val authService = AuthorizationService(context)
-    private val tokenRequestFlow = MutableSharedFlow<Result<TokenRequest>>(extraBufferCapacity = 1)
+    private val tokenRequestFlow = MutableSharedFlow<Result<TokenRequest>>(
+        extraBufferCapacity = 1,
+        onBufferOverflow = BufferOverflow.DROP_OLDEST
+    )
     private var launcher: ActivityResultLauncher<Intent>? = null
 
     fun registerCaller(caller: ActivityResultCaller) {
@@ -54,6 +59,7 @@ class AndroidAuthRepository(
 
     fun dispose() {
         authService.dispose()
+        tokenRequestFlow.tryEmit(Result.failure(CancellationException("Auth disposed")))
     }
 
     private suspend fun getCode(): Result<TokenRequest> {
