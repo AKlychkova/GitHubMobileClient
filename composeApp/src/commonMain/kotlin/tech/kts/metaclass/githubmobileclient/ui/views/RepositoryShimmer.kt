@@ -53,7 +53,7 @@ fun RepositoryShimmer(
 
 @Composable
 @Preview
-fun RepositoryShimmerPreview() {
+private fun RepositoryShimmerPreview() {
     GitHubMaterialTheme {
         RepositoryShimmer()
     }
