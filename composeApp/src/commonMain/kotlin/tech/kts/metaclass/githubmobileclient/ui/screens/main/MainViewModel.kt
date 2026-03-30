@@ -29,12 +29,7 @@ class MainViewModel(
     val state: StateFlow<MainUiState> = _state.asStateFlow()
 
     init {
-        searchQueryFlow
-            .debounce(300L)
-            .distinctUntilChanged()
-            .filter { query -> query.isNotBlank() }
-            .onEach { query -> searchRepositories(query) }
-            .launchIn(viewModelScope)
+        observeSearchQuery()
     }
 
     fun onSearchQueryChange(query: String) {
@@ -53,7 +48,7 @@ class MainViewModel(
 
             repository.searchRepositories(query).fold(
                 onSuccess = ::onSearchSuccess,
-                onFailure = ::onSearchFailer
+                onFailure = ::onSearchFailed
             )
 
         }
@@ -63,7 +58,7 @@ class MainViewModel(
         _state.update { it.copy(isLoading = false, repositories = repositories) }
     }
 
-    fun onSearchFailer(throwable: Throwable) {
+    fun onSearchFailed(throwable: Throwable) {
         Napier.e("Search error", throwable, tag = "Network")
         _state.update {
             it.copy(
@@ -72,5 +67,14 @@ class MainViewModel(
                 error = throwable.message ?: "Unknown error"
             )
         }
+    }
+
+    private fun observeSearchQuery() {
+        searchQueryFlow
+            .debounce(300L)
+            .distinctUntilChanged()
+            .filter { query -> query.isNotBlank() }
+            .onEach { query -> searchRepositories(query) }
+            .launchIn(viewModelScope)
     }
 }
