@@ -8,6 +8,8 @@ plugins {
     alias(libs.plugins.serialization)
     alias(libs.plugins.ksp)
     alias(libs.plugins.androidx.room)
+    alias(libs.plugins.google.services)
+    alias(libs.plugins.firebase.crashlytics)
 }
 
 kotlin {
@@ -34,6 +36,9 @@ kotlin {
             implementation(libs.ktor.android)
             implementation(libs.appauth)
             implementation(libs.koin.android)
+            implementation(project.dependencies.platform(libs.firebase.bom))
+            implementation(libs.firebase.analytics)
+            implementation(libs.firebase.crashlytics)
         }
         iosMain.dependencies {
             implementation(libs.ktor.ios)
@@ -65,7 +70,8 @@ kotlin {
             implementation(libs.koin.core.viewmodel)
             implementation(libs.koin.compose)
             implementation(libs.koin.compose.viewmodel)
-            implementation(libs.koin.compose.viewmodel.navigation)
+
+
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)
