@@ -16,12 +16,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.lifecycle.viewmodel.compose.viewModel
 import githubmobileclient.composeapp.generated.resources.Res
 import githubmobileclient.composeapp.generated.resources.start_primary_button
 import githubmobileclient.composeapp.generated.resources.start_subtitle
 import githubmobileclient.composeapp.generated.resources.start_title
 import org.jetbrains.compose.resources.stringResource
+import org.koin.compose.viewmodel.koinViewModel
 import tech.kts.metaclass.githubmobileclient.ui.theme.GitHubMaterialTheme
 import tech.kts.metaclass.githubmobileclient.ui.theme.gapLarge
 import tech.kts.metaclass.githubmobileclient.ui.theme.gapMedium
@@ -30,11 +30,27 @@ import tech.kts.metaclass.githubmobileclient.ui.theme.paddingMedium
 
 @Composable
 fun StartScreen(
-    viewModel: StartViewModel = viewModel { StartViewModel() },
+    modifier: Modifier = Modifier,
     onNavigateToLogin: () -> Unit
 ) {
+    val viewModel = koinViewModel<StartViewModel>()
+
+    StartView(
+        modifier = modifier,
+        onLoginClick = {
+            viewModel.disableStartScreen()
+            onNavigateToLogin()
+        }
+    )
+}
+
+@Composable
+private fun StartView(
+    modifier: Modifier = Modifier,
+    onLoginClick: () -> Unit,
+) {
     Scaffold(
-        modifier = Modifier.fillMaxSize()
+        modifier = modifier.fillMaxSize()
     ) { contentPadding ->
         Column(
             modifier = Modifier
@@ -60,10 +76,7 @@ fun StartScreen(
             Spacer(modifier = Modifier.weight(1f))
 
             Button(
-                onClick = {
-                    viewModel.disableStartScreen()
-                    onNavigateToLogin()
-                },
+                onClick = onLoginClick,
                 modifier = Modifier
                     .fillMaxWidth(),
                 shape = MaterialTheme.shapes.small
@@ -81,7 +94,7 @@ fun StartScreen(
 @Preview
 private fun StartScreenPreview() {
     GitHubMaterialTheme {
-        StartScreen {}
+        StartView {}
     }
 }
 
@@ -89,6 +102,6 @@ private fun StartScreenPreview() {
 @Preview
 private fun StartScreenPreviewDark() {
     GitHubMaterialTheme(darkTheme = true) {
-        StartScreen {}
+        StartView {}
     }
 }

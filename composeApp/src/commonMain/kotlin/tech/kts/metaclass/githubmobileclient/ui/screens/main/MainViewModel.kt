@@ -15,13 +15,13 @@ import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import tech.kts.metaclass.githubmobileclient.data.repositories.GitHubRepositoryRepository
-import tech.kts.metaclass.githubmobileclient.data.repositories.GitHubRepositoryRepositoryImpl
 import tech.kts.metaclass.githubmobileclient.entities.GitHubRepository
+import tech.kts.metaclass.githubmobileclient.useCases.repositories.SearchRepositoriesResult
+import tech.kts.metaclass.githubmobileclient.useCases.repositories.SearchRepositoriesUseCase
 
 @OptIn(FlowPreview::class)
 class MainViewModel(
-    private val repository: GitHubRepositoryRepository = GitHubRepositoryRepositoryImpl() // TODO: вынести в di контейнер
+    private val search: SearchRepositoriesUseCase
 ) : ViewModel() {
     private val searchQueryFlow = MutableStateFlow("")
     private var currentSearchJob: Job? = null
@@ -46,11 +46,11 @@ class MainViewModel(
         currentSearchJob = viewModelScope.launch {
             _state.update { it.copy(isLoading = true, error = null) }
 
-            repository.searchRepositories(query).fold(
-                onSuccess = ::onSearchSuccess,
-                onFailure = ::onSearchFailed
-            )
-
+            when (val result = search(query)) {
+                is SearchRepositoriesResult.Success -> onSearchSuccess(result.repositories)
+                is SearchRepositoriesResult.Cached -> onSearchSuccess(result.repositories)
+                is SearchRepositoriesResult.Failure -> onSearchFailed(result.cause)
+            }
         }
     }
 

@@ -12,11 +12,10 @@ import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import tech.kts.metaclass.githubmobileclient.data.auth.AuthRepository
-import tech.kts.metaclass.githubmobileclient.data.auth.AuthRepositoryImpl
+import tech.kts.metaclass.githubmobileclient.useCases.auth.LoginUseCase
 
 class LoginViewModel(
-   private val repository: AuthRepository = AuthRepositoryImpl() // TODO: вынести в di контейнер
+   private val login: LoginUseCase
 ) : ViewModel() {
     private val _state = MutableStateFlow(LoginUiState.Initial)
     val state: StateFlow<LoginUiState> = _state.asStateFlow()
@@ -48,7 +47,7 @@ class LoginViewModel(
 
     fun onLoginClick() {
         viewModelScope.launch(Dispatchers.IO) {
-            repository.login().fold(
+            login().fold(
                 onSuccess = {
                     pushEvent(LoginUiEvent.LoginSuccessEvent)
                 },

@@ -5,12 +5,14 @@ import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
 import kotlinx.coroutines.launch
-import tech.kts.metaclass.githubmobileclient.data.repositories.PreferencesStorage
+import tech.kts.metaclass.githubmobileclient.useCases.preferences.ToggleStartScreenUseCase
 
-class StartViewModel: ViewModel() {
+class StartViewModel(
+    private val toggleStartScreen: ToggleStartScreenUseCase
+): ViewModel() {
     fun disableStartScreen() {
         viewModelScope.launch(Dispatchers.IO) {
-            PreferencesStorage.toggleStartScreen(false)
+            toggleStartScreen(false)
         }
     }
 }

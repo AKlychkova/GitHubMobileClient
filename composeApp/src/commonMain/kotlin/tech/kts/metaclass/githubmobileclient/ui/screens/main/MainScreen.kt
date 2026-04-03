@@ -27,11 +27,11 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.lifecycle.viewmodel.compose.viewModel
 import githubmobileclient.composeapp.generated.resources.Res
 import githubmobileclient.composeapp.generated.resources.main_clear_button_description
 import githubmobileclient.composeapp.generated.resources.main_search_field_hint
 import org.jetbrains.compose.resources.stringResource
+import org.koin.compose.viewmodel.koinViewModel
 import tech.kts.metaclass.githubmobileclient.entities.GitHubRepository
 import tech.kts.metaclass.githubmobileclient.entities.User
 import tech.kts.metaclass.githubmobileclient.entities.ProgrammingLanguage
@@ -44,9 +44,9 @@ import tech.kts.metaclass.githubmobileclient.ui.views.RepositoryView
 
 @Composable
 fun MainScreen(
-    viewModel: MainViewModel = viewModel { MainViewModel() },
     modifier: Modifier = Modifier
 ) {
+    val viewModel = koinViewModel<MainViewModel>()
     val state by viewModel.state.collectAsStateWithLifecycle()
 
     MainView(

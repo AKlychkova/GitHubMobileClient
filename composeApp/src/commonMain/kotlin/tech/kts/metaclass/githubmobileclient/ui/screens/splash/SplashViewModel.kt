@@ -1,15 +1,18 @@
 package tech.kts.metaclass.githubmobileclient.ui.screens.splash
 
 import androidx.lifecycle.ViewModel
-import tech.kts.metaclass.githubmobileclient.data.repositories.PreferencesStorage
-import tech.kts.metaclass.githubmobileclient.data.repositories.TokenStorage
 import tech.kts.metaclass.githubmobileclient.ui.Destination
+import tech.kts.metaclass.githubmobileclient.useCases.auth.CheckTokenExistUseCase
+import tech.kts.metaclass.githubmobileclient.useCases.preferences.ShouldShowStartScreenUseCase
 
-class SplashViewModel : ViewModel() {
+class SplashViewModel(
+    private val shouldShowStartScreen: ShouldShowStartScreenUseCase,
+    private val tokenExist: CheckTokenExistUseCase
+) : ViewModel() {
     suspend fun getStartDestination(): Destination {
-        return if (PreferencesStorage.shouldShowStartScreen()) {
+        return if (shouldShowStartScreen()) {
             Destination.Start
-        } else if (TokenStorage.get() == null) {
+        } else if (!tokenExist()) {
             Destination.Login
         } else {
             Destination.Main
