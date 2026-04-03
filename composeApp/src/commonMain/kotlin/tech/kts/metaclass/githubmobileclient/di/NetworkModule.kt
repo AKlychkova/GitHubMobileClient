@@ -18,7 +18,7 @@ import tech.kts.metaclass.githubmobileclient.data.network.GitHubApi
 import tech.kts.metaclass.githubmobileclient.data.network.GitHubApiImpl
 import tech.kts.metaclass.githubmobileclient.data.network.mappers.ApiGitHubRepositoryMapper
 import tech.kts.metaclass.githubmobileclient.data.network.mappers.ApiUserMapper
-import tech.kts.metaclass.githubmobileclient.data.repositories.TokenRepository
+import tech.kts.metaclass.githubmobileclient.useCases.auth.TokenRepository
 
 private const val GITHUB_API_VERSION = "2022-11-28"
 private const val KTOR_LOG_TAG = "Ktor"

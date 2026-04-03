@@ -9,12 +9,9 @@ import tech.kts.metaclass.githubmobileclient.data.database.mappers.DbGitHubRepos
 import tech.kts.metaclass.githubmobileclient.data.network.GitHubApi
 import tech.kts.metaclass.githubmobileclient.data.network.mappers.ApiGitHubRepositoryMapper
 import tech.kts.metaclass.githubmobileclient.entities.GitHubRepository
-import kotlin.coroutines.cancellation.CancellationException
-
-// TODO вынести интерфейс в domain слой, чтобы не было зависимости domain -> data
-interface GitHubRepositoryRepository {
-    suspend fun searchRepositories(query: String): Result<List<GitHubRepository>>
-}
+import tech.kts.metaclass.githubmobileclient.useCases.repositories.GitHubRepositoryRepository
+import tech.kts.metaclass.githubmobileclient.useCases.repositories.SearchRepositoriesResult
+import tech.kts.metaclass.githubmobileclient.utils.runSuspendCatching
 
 class GitHubRepositoryRepositoryImpl(
     private val api: GitHubApi,
@@ -24,27 +21,29 @@ class GitHubRepositoryRepositoryImpl(
     private val repositoryDao: GitHubRepositoryDao
 ) : GitHubRepositoryRepository {
 
-    override suspend fun searchRepositories(query: String): Result<List<GitHubRepository>> =
-        withContext(Dispatchers.IO) {
-            try {
-                val remote = api.searchRepositories(query)
-                    .items
-                    .map(apiMapper::toDomainModel)
-
+    override suspend fun searchRepositories(
+        query: String
+    ): SearchRepositoriesResult = withContext(Dispatchers.IO) {
+        runSuspendCatching {
+            api.searchRepositories(query)
+                .items
+                .map(apiMapper::toDomainModel)
+        }.fold(
+            onSuccess = { remote ->
                 saveToDb(remote)
-                Result.success(remote)
-            } catch (e: CancellationException) {
-                throw e
-            } catch (e: Exception) {
+                SearchRepositoriesResult.Success(remote)
+            },
+            onFailure = { e ->
                 val cached = getCached()
 
                 if (cached.isNotEmpty()) {
-                    Result.success(cached)
+                    SearchRepositoriesResult.Cached(cached, e)
                 } else {
-                    Result.failure(e)
+                    SearchRepositoriesResult.Failure(e)
                 }
             }
-        }
+        )
+    }
 
     private suspend fun saveToDb(repos: List<GitHubRepository>) {
         val dbModels = repos.map(dbMapper::toDbModel)

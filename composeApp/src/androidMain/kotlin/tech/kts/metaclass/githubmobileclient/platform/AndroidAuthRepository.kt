@@ -20,7 +20,7 @@ import net.openid.appauth.ClientSecretPost
 import net.openid.appauth.ResponseTypeValues
 import net.openid.appauth.TokenRequest
 import tech.kts.metaclass.githubmobileclient.data.network.auth.AuthConfig
-import tech.kts.metaclass.githubmobileclient.data.repositories.TokenRepository
+import tech.kts.metaclass.githubmobileclient.useCases.auth.TokenRepository
 import tech.kts.metaclass.githubmobileclient.utils.runSuspendCatching
 import kotlin.coroutines.cancellation.CancellationException
 import kotlin.coroutines.resume

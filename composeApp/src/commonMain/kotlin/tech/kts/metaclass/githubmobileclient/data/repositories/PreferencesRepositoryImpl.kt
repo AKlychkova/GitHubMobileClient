@@ -7,12 +7,8 @@ import androidx.datastore.preferences.core.edit
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
+import tech.kts.metaclass.githubmobileclient.useCases.preferences.PreferencesRepository
 import tech.kts.metaclass.githubmobileclient.utils.runSuspendCatching
-
-interface PreferencesRepository {
-    suspend fun shouldShowStartScreen(): Boolean
-    suspend fun toggleStartScreen(isShown: Boolean): Result<Unit>
-}
 
 class PreferencesRepositoryImpl(
     private val dataStore: DataStore<Preferences>
