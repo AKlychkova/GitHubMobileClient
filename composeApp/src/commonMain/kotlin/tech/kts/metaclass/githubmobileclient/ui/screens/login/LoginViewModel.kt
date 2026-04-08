@@ -2,6 +2,7 @@ package tech.kts.metaclass.githubmobileclient.ui.screens.login
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import io.github.aakira.napier.Napier
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -17,51 +18,27 @@ import tech.kts.metaclass.githubmobileclient.useCases.auth.LoginUseCase
 class LoginViewModel(
    private val login: LoginUseCase
 ) : ViewModel() {
-    private val _state = MutableStateFlow(LoginUiState.Initial)
+    private val _state = MutableStateFlow(LoginUiState())
     val state: StateFlow<LoginUiState> = _state.asStateFlow()
 
     private val _events = MutableSharedFlow<LoginUiEvent>()
     val events: SharedFlow<LoginUiEvent> = _events.asSharedFlow()
 
-    fun onUsernameChange(value: String) {
-        _state.update { current ->
-            current.copy(
-                username = value,
-                isLoginButtonActive = isLoginButtonActive(value, current.password)
-            )
-        }
-    }
-
-    fun onPasswordChange(value: String) {
-        _state.update { current ->
-            current.copy(
-                password = value,
-                isLoginButtonActive = isLoginButtonActive(current.username, value)
-            )
-        }
-    }
-
-    fun onPasswordVisibilityClick() {
-        _state.update { it.copy(isPasswordVisible = !it.isPasswordVisible) }
-    }
-
     fun onLoginClick() {
+        _state.update { it.copy(isLoading = true) }
         viewModelScope.launch(Dispatchers.IO) {
             login().fold(
                 onSuccess = {
                     pushEvent(LoginUiEvent.LoginSuccessEvent)
                 },
-                onFailure = {
-                    _state.update { it.copy(error = true) }
+                onFailure = { e ->
+                    Napier.e("Auth error", e, tag = "Network")
+                    pushEvent(LoginUiEvent.LoginFailureEvent)
+                    _state.update { it.copy(isLoading = false) }
                 }
             )
         }
     }
-
-    private fun isLoginButtonActive(username: String, password: String): Boolean {
-        return username.isNotBlank() && password.isNotBlank()
-    }
-
     private fun pushEvent(event: LoginUiEvent) = viewModelScope.launch {
         _events.emit(event)
     }

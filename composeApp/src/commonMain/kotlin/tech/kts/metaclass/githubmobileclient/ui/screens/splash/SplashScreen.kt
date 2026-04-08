@@ -8,10 +8,10 @@ import tech.kts.metaclass.githubmobileclient.ui.Destination
 
 @Composable
 fun SplashScreen(
+    onNavigate: (Destination) -> Unit,
     modifier: Modifier = Modifier,
-    onNavigate: (Destination) -> Unit
+    viewModel: SplashViewModel = koinViewModel<SplashViewModel>()
 ) {
-    val viewModel = koinViewModel<SplashViewModel>()
 
     LaunchedEffect(Unit) {
         val destination = viewModel.getStartDestination()

@@ -27,11 +27,20 @@ data class DbGitHubRepository (
     @ColumnInfo(name = "description")
     val description: String?,
 
+    @ColumnInfo(name = "visibility")
+    val visibility: String,
+
     @ColumnInfo(name = "language")
     val language: ProgrammingLanguage,
 
     @ColumnInfo(name = "stars_num")
     val stars: Int,
+
+    @ColumnInfo(name = "forks_num")
+    val forks: Int,
+
+    @ColumnInfo(name = "issues_num")
+    val openIssues: Int,
 
     @ColumnInfo(name = "owner_id")
     val ownerId: Long

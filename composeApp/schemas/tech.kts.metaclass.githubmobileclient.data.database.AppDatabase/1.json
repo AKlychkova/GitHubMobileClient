@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "5df96bc76da855e63c515eea991849b3",
+    "identityHash": "a61ac0a3b7711cf693db35111539c78f",
     "entities": [
       {
         "tableName": "users",
@@ -35,7 +35,7 @@
       },
       {
         "tableName": "repositories",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER NOT NULL, `name` TEXT NOT NULL, `description` TEXT, `language` TEXT NOT NULL, `stars_num` INTEGER NOT NULL, `owner_id` INTEGER NOT NULL, PRIMARY KEY(`id`), FOREIGN KEY(`owner_id`) REFERENCES `users`(`id`) ON UPDATE NO ACTION ON DELETE NO ACTION )",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER NOT NULL, `name` TEXT NOT NULL, `description` TEXT, `visibility` TEXT NOT NULL, `language` TEXT NOT NULL, `stars_num` INTEGER NOT NULL, `forks_num` INTEGER NOT NULL, `issues_num` INTEGER NOT NULL, `owner_id` INTEGER NOT NULL, PRIMARY KEY(`id`), FOREIGN KEY(`owner_id`) REFERENCES `users`(`id`) ON UPDATE NO ACTION ON DELETE NO ACTION )",
         "fields": [
           {
             "fieldPath": "id",
@@ -55,6 +55,12 @@
             "affinity": "TEXT"
           },
           {
+            "fieldPath": "visibility",
+            "columnName": "visibility",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
             "fieldPath": "language",
             "columnName": "language",
             "affinity": "TEXT",
@@ -63,6 +69,18 @@
           {
             "fieldPath": "stars",
             "columnName": "stars_num",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "forks",
+            "columnName": "forks_num",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "openIssues",
+            "columnName": "issues_num",
             "affinity": "INTEGER",
             "notNull": true
           },
@@ -96,7 +114,7 @@
     ],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '5df96bc76da855e63c515eea991849b3')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'a61ac0a3b7711cf693db35111539c78f')"
     ]
   }
 }

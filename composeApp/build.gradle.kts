@@ -55,6 +55,7 @@ kotlin {
             implementation(libs.ktor.serialization.json)
             implementation(libs.ktor.content.negotiation)
             implementation(libs.ktor.logging)
+            implementation(libs.ktor.auth)
             implementation(libs.napier)
             implementation(libs.material.icons.core)
             implementation(libs.datastore.preferences)

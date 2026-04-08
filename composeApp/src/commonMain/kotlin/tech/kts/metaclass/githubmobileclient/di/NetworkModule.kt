@@ -2,7 +2,9 @@ package tech.kts.metaclass.githubmobileclient.di
 
 import io.github.aakira.napier.Napier
 import io.ktor.client.HttpClient
-import io.ktor.client.plugins.api.createClientPlugin
+import io.ktor.client.plugins.auth.Auth
+import io.ktor.client.plugins.auth.providers.BearerTokens
+import io.ktor.client.plugins.auth.providers.bearer
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.client.plugins.defaultRequest
 import io.ktor.client.plugins.logging.LogLevel
@@ -17,6 +19,7 @@ import org.koin.dsl.module
 import tech.kts.metaclass.githubmobileclient.data.network.GitHubApi
 import tech.kts.metaclass.githubmobileclient.data.network.GitHubApiImpl
 import tech.kts.metaclass.githubmobileclient.data.network.mappers.ApiGitHubRepositoryMapper
+import tech.kts.metaclass.githubmobileclient.data.network.mappers.ApiProgrammingLanguageMapper
 import tech.kts.metaclass.githubmobileclient.data.network.mappers.ApiUserMapper
 import tech.kts.metaclass.githubmobileclient.useCases.auth.TokenRepository
 
@@ -34,7 +37,8 @@ val networkModule = module {
     }
 
     factory<ApiUserMapper> { ApiUserMapper() }
-    factory<ApiGitHubRepositoryMapper> { ApiGitHubRepositoryMapper(get()) }
+    factory<ApiProgrammingLanguageMapper> { ApiProgrammingLanguageMapper() }
+    factory<ApiGitHubRepositoryMapper> { ApiGitHubRepositoryMapper(get(), get()) }
 }
 
 fun authHttpClient() = HttpClient {
@@ -55,15 +59,6 @@ fun authHttpClient() = HttpClient {
 }
 
 fun gitHubHttpClient(tokenRepository: TokenRepository): HttpClient {
-    val authPlugin = createClientPlugin("AuthPlugin") {
-        onRequest { request, _ ->
-            val token = tokenRepository.getToken()
-            if (token != null) {
-                request.headers.append("Authorization", "Bearer $token")
-            }
-            request.headers.append(name = "X-GitHub-Api-Version", value = GITHUB_API_VERSION)
-        }
-    }
 
     return HttpClient {
         install(ContentNegotiation) {
@@ -79,14 +74,23 @@ fun gitHubHttpClient(tokenRepository: TokenRepository): HttpClient {
                     Napier.d(message, tag = KTOR_LOG_TAG)
                 }
             }
-            level = LogLevel.HEADERS
+            level = LogLevel.BODY
         }
 
-        install(authPlugin)
+        install(Auth) {
+            bearer {
+                loadTokens {
+                    tokenRepository.getToken()?.let { token ->
+                        BearerTokens(accessToken = token, refreshToken = null)
+                    }
+                }
+            }
+        }
 
         defaultRequest {
             url("https://api.github.com/")
             contentType(ContentType.Application.Json)
+            headers.append(name = "X-GitHub-Api-Version", value = GITHUB_API_VERSION)
         }
     }
 }

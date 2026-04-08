@@ -5,80 +5,133 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentSize
+import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
-import coil3.compose.AsyncImage
-import coil3.compose.LocalPlatformContext
-import coil3.request.ImageRequest
-import githubmobileclient.composeapp.generated.resources.GitHub_Invertocat_Black
+import githubmobileclient.composeapp.generated.resources.Issue_Opened
+import githubmobileclient.composeapp.generated.resources.Repo_Forked
 import githubmobileclient.composeapp.generated.resources.Res
-import githubmobileclient.composeapp.generated.resources.main_avatar_description
+import githubmobileclient.composeapp.generated.resources.Star
+import githubmobileclient.composeapp.generated.resources.repo_forks_icon_content_description
+import githubmobileclient.composeapp.generated.resources.repo_issues_icon_content_description
+import githubmobileclient.composeapp.generated.resources.repo_stars_icon_content_description
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
-import tech.kts.metaclass.githubmobileclient.entities.GitHubRepository
-import tech.kts.metaclass.githubmobileclient.entities.User
 import tech.kts.metaclass.githubmobileclient.entities.ProgrammingLanguage
-import tech.kts.metaclass.githubmobileclient.ui.theme.gapSmall
-import tech.kts.metaclass.githubmobileclient.ui.theme.paddingMedium
+import tech.kts.metaclass.githubmobileclient.ui.screens.main.RepositoryUiState
+import tech.kts.metaclass.githubmobileclient.ui.theme.GitHubMaterialTheme
+import tech.kts.metaclass.githubmobileclient.ui.theme.avatarSize
+import tech.kts.metaclass.githubmobileclient.ui.theme.iconTitleSpace
+import tech.kts.metaclass.githubmobileclient.ui.theme.languageIconSize
+import tech.kts.metaclass.githubmobileclient.ui.theme.paddingSmall
+import tech.kts.metaclass.githubmobileclient.ui.theme.repoCardHorizontalSpace
+import tech.kts.metaclass.githubmobileclient.ui.theme.repoCardVerticalSpace
+import tech.kts.metaclass.githubmobileclient.ui.theme.repoInfoIconSize
+import tech.kts.metaclass.githubmobileclient.ui.theme.spaceBetweenRepoInfoIcons
 
-// TODO: Refactor view
+@OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 fun RepositoryView(
-    repository: GitHubRepository,
+    repository: RepositoryUiState,
     modifier: Modifier = Modifier
 ) {
     OutlinedCard(
         modifier = modifier
     ) {
-        Row(
-            horizontalArrangement = Arrangement.Start,
-            verticalAlignment = Alignment.CenterVertically,
+        Column(
+            verticalArrangement = Arrangement.spacedBy(repoCardVerticalSpace),
             modifier = Modifier
                 .wrapContentSize()
-                .padding(paddingMedium)
+                .padding(paddingSmall)
         ) {
-            AsyncImage(
-                model = ImageRequest.Builder(LocalPlatformContext.current)
-                    .data(repository.owner.avatarUrl)
-                    .listener(
-                        onError = { _, result ->
-                            println("Image error: ${result.throwable}")
-                        }
-                    )
-                    .build(),
-                contentDescription = stringResource(Res.string.main_avatar_description),
-                modifier = Modifier
-                    .fillMaxWidth(0.4f)
-                    .aspectRatio(1f)
-                    .clip(MaterialTheme.shapes.medium),
-                contentScale = ContentScale.Crop,
-                placeholder = painterResource(Res.drawable.GitHub_Invertocat_Black)
-            )
-            Column(
-                horizontalAlignment = Alignment.Start,
-                verticalArrangement = Arrangement.Center,
-                modifier = Modifier
-                    .padding(start = paddingMedium)
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(repoCardHorizontalSpace)
             ) {
-                Text(
-                    text = repository.name,
-                    fontWeight = FontWeight.Bold
+                Avatar(
+                    url = repository.avatarUrl,
+                    modifier = Modifier
+                        .size(avatarSize)
+                        .aspectRatio(1f)
                 )
-                Text('@' + repository.owner.username)
-                Spacer(Modifier.height(gapSmall))
-                Text(repository.description ?: "")
+                Text(
+                    text = repository.fullName,
+                    style = MaterialTheme.typography.titleMedium,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
+                    modifier = Modifier
+                        .weight(1f)
+                )
+                InfoChip(
+                    text = repository.visibility
+                )
+            }
+            if (repository.description != null) {
+                Text(
+                    text = repository.description,
+                    style = MaterialTheme.typography.bodyMedium,
+                    maxLines = 4,
+                    overflow = TextOverflow.Ellipsis
+                )
+            }
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(iconTitleSpace)
+            ) {
+                LanguageIcon(
+                    language = repository.language,
+                    modifier = Modifier
+                        .size(languageIconSize)
+                        .aspectRatio(1f)
+                )
+                Text(
+                    text = repository.language.title,
+                    style = MaterialTheme.typography.bodySmall
+                )
+                Spacer(Modifier.width(spaceBetweenRepoInfoIcons))
+                Icon(
+                    painter = painterResource(Res.drawable.Repo_Forked),
+                    contentDescription = stringResource(Res.string.repo_forks_icon_content_description),
+                    tint = MaterialTheme.colorScheme.onSurface,
+                    modifier = Modifier.size(repoInfoIconSize)
+                )
+                Text(
+                    text = repository.forks,
+                    style = MaterialTheme.typography.bodySmall
+                )
+                Spacer(Modifier.width(spaceBetweenRepoInfoIcons))
+                Icon(
+                    painter = painterResource(Res.drawable.Star),
+                    contentDescription = stringResource(Res.string.repo_stars_icon_content_description),
+                    tint = MaterialTheme.colorScheme.onSurface,
+                    modifier = Modifier.size(repoInfoIconSize)
+                )
+                Text(
+                    text = repository.stars,
+                    style = MaterialTheme.typography.bodySmall
+                )
+                Spacer(Modifier.width(spaceBetweenRepoInfoIcons))
+                Icon(
+                    painter = painterResource(Res.drawable.Issue_Opened),
+                    contentDescription = stringResource(Res.string.repo_issues_icon_content_description),
+                    tint = MaterialTheme.colorScheme.onSurface,
+                    modifier = Modifier.size(repoInfoIconSize)
+                )
+                Text(
+                    text = repository.openIssues,
+                    style = MaterialTheme.typography.bodySmall
+                )
             }
         }
     }
@@ -86,19 +139,40 @@ fun RepositoryView(
 
 @Preview
 @Composable
-private fun RepositoryViewPreview() {
-    RepositoryView(
-        GitHubRepository(
-            id = 1,
-            name = "My first repository",
-            description = "Test project",
-            language = ProgrammingLanguage.KOTLIN,
-            stars = 5,
-            owner = User(
-                id = 1L,
-                username = "AKlychkova",
-                avatarUrl = "https://avatars.githubusercontent.com/u/90353866?v=4"
+private fun RepositoryViewPreviewLight() {
+    GitHubMaterialTheme {
+        RepositoryView(
+            RepositoryUiState(
+                id = 1,
+                fullName = "Octocat/MyFirstProject",
+                description = "A modern, lightweight library designed to simplify development of scalable and maintainable applications using Kotlin Multiplatform. It includes support for networking, local caching, state management, and follows clean architecture principles, making it easy to share business logic across Android and iOS while keeping UI layers independent and responsive.",
+                language = ProgrammingLanguage.KOTLIN,
+                stars = "5.1k",
+                visibility = "Public",
+                forks = "3M",
+                openIssues = "1",
+                avatarUrl = "https://avatars.githubusercontent.com/u/14364638?s=48&v=4"
             )
         )
-    )
+    }
+}
+
+@Preview
+@Composable
+private fun RepositoryViewPreviewDark() {
+    GitHubMaterialTheme(darkTheme = true) {
+        RepositoryView(
+            RepositoryUiState(
+                id = 1,
+                fullName = "Octocat/MyFirstProject",
+                description = "A modern, lightweight library designed to simplify development of scalable and maintainable applications using Kotlin Multiplatform. It includes support for networking, local caching, state management, and follows clean architecture principles, making it easy to share business logic across Android and iOS while keeping UI layers independent and responsive.",
+                language = ProgrammingLanguage.KOTLIN,
+                stars = "5.1k",
+                visibility = "Public",
+                forks = "3M",
+                openIssues = "1",
+                avatarUrl = "https://avatars.githubusercontent.com/u/14364638?s=48&v=4"
+            )
+        )
+    }
 }

@@ -14,27 +14,18 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
-import githubmobileclient.composeapp.generated.resources.Res
-import githubmobileclient.composeapp.generated.resources.start_primary_button
-import githubmobileclient.composeapp.generated.resources.start_subtitle
-import githubmobileclient.composeapp.generated.resources.start_title
-import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 import tech.kts.metaclass.githubmobileclient.ui.theme.GitHubMaterialTheme
-import tech.kts.metaclass.githubmobileclient.ui.theme.gapLarge
-import tech.kts.metaclass.githubmobileclient.ui.theme.gapMedium
 import tech.kts.metaclass.githubmobileclient.ui.theme.gapSmall
 import tech.kts.metaclass.githubmobileclient.ui.theme.paddingMedium
 
 @Composable
 fun StartScreen(
+    onNavigateToLogin: () -> Unit,
     modifier: Modifier = Modifier,
-    onNavigateToLogin: () -> Unit
+    viewModel: StartViewModel = koinViewModel<StartViewModel>()
 ) {
-    val viewModel = koinViewModel<StartViewModel>()
-
     StartView(
         modifier = modifier,
         onLoginClick = {
@@ -60,19 +51,6 @@ private fun StartView(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Top
         ) {
-            Spacer(Modifier.height(gapLarge))
-            Text(
-                stringResource(Res.string.start_title),
-                style = MaterialTheme.typography.displaySmall,
-                textAlign = TextAlign.Center
-            )
-            Spacer(Modifier.height(gapMedium))
-            Text(
-                stringResource(Res.string.start_subtitle),
-                style = MaterialTheme.typography.headlineSmall,
-                textAlign = TextAlign.Center
-            )
-
             Spacer(modifier = Modifier.weight(1f))
 
             Button(
@@ -82,7 +60,7 @@ private fun StartView(
                 shape = MaterialTheme.shapes.small
             ) {
                 Text(
-                    stringResource(Res.string.start_primary_button)
+                    "Next"
                 )
             }
             Spacer(modifier = Modifier.height(gapSmall))

@@ -11,7 +11,6 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedCard
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
@@ -27,33 +26,33 @@ fun RepositoryShimmer(
     val transition = rememberInfiniteTransition()
 
     val alpha by transition.animateFloat(
-        initialValue = 0.6f,
+        initialValue = 0.4f,
         targetValue = 1f,
         animationSpec = infiniteRepeatable(
             animation = tween(
-                durationMillis = 900,
+                durationMillis = 1000,
                 easing = LinearEasing
             ),
             repeatMode = RepeatMode.Reverse
         )
     )
 
-    OutlinedCard(
+
+    Box(
         modifier = modifier
-    ) {
-        Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(repositoryShimmerHeight)
-                .graphicsLayer { this.alpha = alpha }
-                .background(MaterialTheme.colorScheme.surfaceVariant)
-        )
-    }
+            .fillMaxWidth()
+            .height(repositoryShimmerHeight)
+            .graphicsLayer { this.alpha = alpha }
+            .background(
+                color = MaterialTheme.colorScheme.surfaceVariant,
+                shape = MaterialTheme.shapes.medium
+            )
+    )
 }
 
 @Composable
 @Preview
-private fun RepositoryShimmerPreview() {
+private fun RepositoryShimmerPreviewLight() {
     GitHubMaterialTheme {
         RepositoryShimmer()
     }

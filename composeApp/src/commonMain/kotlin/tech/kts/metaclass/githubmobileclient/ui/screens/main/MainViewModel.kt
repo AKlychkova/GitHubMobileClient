@@ -15,18 +15,18 @@ import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import tech.kts.metaclass.githubmobileclient.entities.GitHubRepository
 import tech.kts.metaclass.githubmobileclient.useCases.repositories.SearchRepositoriesResult
 import tech.kts.metaclass.githubmobileclient.useCases.repositories.SearchRepositoriesUseCase
 
 @OptIn(FlowPreview::class)
 class MainViewModel(
-    private val search: SearchRepositoriesUseCase
+    private val search: SearchRepositoriesUseCase,
+    private val mapper: UiRepositoryMapper
 ) : ViewModel() {
-    private val searchQueryFlow = MutableStateFlow("")
     private var currentSearchJob: Job? = null
     private val _state = MutableStateFlow(MainUiState())
     val state: StateFlow<MainUiState> = _state.asStateFlow()
+    private val searchQueryFlow = MutableStateFlow(_state.value.searchQuery)
 
     init {
         observeSearchQuery()
@@ -37,6 +37,10 @@ class MainViewModel(
         searchQueryFlow.value = query
     }
 
+    fun onSearchRetry() {
+        searchRepositories(_state.value.searchQuery)
+    }
+
     fun clearSearch() {
         onSearchQueryChange("")
     }
@@ -44,28 +48,35 @@ class MainViewModel(
     private fun searchRepositories(query: String) {
         currentSearchJob?.cancel()
         currentSearchJob = viewModelScope.launch {
-            _state.update { it.copy(isLoading = true, error = null) }
+            _state.update { it.copy(isLoading = true, error = false) }
 
             when (val result = search(query)) {
-                is SearchRepositoriesResult.Success -> onSearchSuccess(result.repositories)
-                is SearchRepositoriesResult.Cached -> onSearchSuccess(result.repositories)
-                is SearchRepositoriesResult.Failure -> onSearchFailed(result.cause)
+                is SearchRepositoriesResult.Success -> {
+                    _state.update { it.copy(
+                        isLoading = false,
+                        isCachedDataShown = false,
+                        repositories = result.repositories.map(mapper::toUiState))
+                    }
+                }
+                is SearchRepositoriesResult.Cached -> {
+                    Napier.e("Search error", result.cause, tag = "Network")
+                    _state.update { it.copy(
+                        isLoading = false,
+                        isCachedDataShown = true,
+                        repositories = result.repositories.map(mapper::toUiState))
+                    }
+                }
+                is SearchRepositoriesResult.Failure -> {
+                    Napier.e("Search error", result.cause, tag = "Network")
+                    _state.update {
+                        it.copy(
+                            isLoading = false,
+                            repositories = emptyList(),
+                            error = true
+                        )
+                    }
+                }
             }
-        }
-    }
-
-    fun onSearchSuccess(repositories: List<GitHubRepository>) {
-        _state.update { it.copy(isLoading = false, repositories = repositories) }
-    }
-
-    fun onSearchFailed(throwable: Throwable) {
-        Napier.e("Search error", throwable, tag = "Network")
-        _state.update {
-            it.copy(
-                isLoading = false,
-                repositories = emptyList(),
-                error = throwable.message ?: "Unknown error"
-            )
         }
     }
 
