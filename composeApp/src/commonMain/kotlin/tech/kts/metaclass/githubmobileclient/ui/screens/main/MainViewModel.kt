@@ -10,12 +10,12 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.distinctUntilChanged
-import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import tech.kts.metaclass.githubmobileclient.useCases.repositories.SearchRepositoriesResult
+import tech.kts.metaclass.githubmobileclient.entities.GitHubRepository
+import tech.kts.metaclass.githubmobileclient.useCases.repositories.SearchResult
 import tech.kts.metaclass.githubmobileclient.useCases.repositories.SearchRepositoriesUseCase
 
 @OptIn(FlowPreview::class)
@@ -45,47 +45,110 @@ class MainViewModel(
         onSearchQueryChange("")
     }
 
+    fun loadNextPage() {
+        val nextPageNum = _state.value.nextPageNum ?: return
+        if (_state.value.isLoadingNextPage || _state.value.isCachedDataShown) return
+        loadPage(_state.value.searchQuery, nextPageNum)
+    }
+
     private fun searchRepositories(query: String) {
         currentSearchJob?.cancel()
         currentSearchJob = viewModelScope.launch {
-            _state.update { it.copy(isLoading = true, error = false) }
+            _state.update {
+                it.copy(
+                    isLoading = true,
+                    error = false,
+                    repositories = emptyList(),
+                    nextPageNum = null
+                )
+            }
+            handleResult(
+                result = search(query, 1),
+                accumulated = emptyList()
+            )
+        }
+    }
 
-            when (val result = search(query)) {
-                is SearchRepositoriesResult.Success -> {
-                    _state.update { it.copy(
+    private fun onBlankSearch() {
+        currentSearchJob?.cancel()
+        _state.update {
+            it.copy(
+                isLoading = false,
+                isLoadingNextPage = false,
+                isCachedDataShown = false,
+                error = false,
+                repositories = emptyList(),
+                nextPageNum = null
+            )
+        }
+    }
+
+    private fun loadPage(query: String, pageNum: Int) {
+        if (query.isBlank()) return
+        currentSearchJob?.cancel()
+        currentSearchJob = viewModelScope.launch {
+            _state.update { it.copy(isLoadingNextPage = true) }
+            handleResult(search(query, pageNum), accumulated = _state.value.repositories)
+        }
+    }
+
+    private fun handleResult(
+        result: SearchResult<GitHubRepository>,
+        accumulated: List<RepositoryUiState>
+    ) {
+        when (result) {
+            is SearchResult.Success -> {
+                _state.update {
+                    it.copy(
                         isLoading = false,
+                        isLoadingNextPage = false,
                         isCachedDataShown = false,
-                        repositories = result.repositories.map(mapper::toUiState))
-                    }
+                        error = false,
+                        repositories = accumulated + result.data.map(mapper::toUiState),
+                        nextPageNum = result.nextPageNum
+                    )
                 }
-                is SearchRepositoriesResult.Cached -> {
-                    Napier.e("Search error", result.cause, tag = "Network")
-                    _state.update { it.copy(
+            }
+
+            is SearchResult.Cached -> {
+                Napier.e("Search error", result.cause, tag = "Network")
+                _state.update {
+                    it.copy(
                         isLoading = false,
+                        isLoadingNextPage = false,
                         isCachedDataShown = true,
-                        repositories = result.repositories.map(mapper::toUiState))
-                    }
+                        repositories = result.data.map(mapper::toUiState),
+                        nextPageNum = null
+                    )
                 }
-                is SearchRepositoriesResult.Failure -> {
-                    Napier.e("Search error", result.cause, tag = "Network")
-                    _state.update {
-                        it.copy(
-                            isLoading = false,
-                            repositories = emptyList(),
-                            error = true
-                        )
-                    }
+            }
+
+            is SearchResult.Failure -> {
+                Napier.e("Search error", result.cause, tag = "Network")
+                _state.update {
+                    it.copy(
+                        isLoading = false,
+                        isLoadingNextPage = false,
+                        error = accumulated.isEmpty(),
+                        nextPageNum = null
+                    )
                 }
             }
         }
     }
 
+
     private fun observeSearchQuery() {
         searchQueryFlow
-            .debounce(300L)
+            .debounce(600L)
             .distinctUntilChanged()
-            .filter { query -> query.isNotBlank() }
-            .onEach { query -> searchRepositories(query) }
+            .onEach { query ->
+                if (query.isBlank()) {
+                    onBlankSearch()
+                } else {
+                    searchRepositories(query)
+                }
+            }
             .launchIn(viewModelScope)
     }
 }

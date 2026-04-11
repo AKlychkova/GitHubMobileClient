@@ -3,6 +3,7 @@ package tech.kts.metaclass.githubmobileclient.ui.screens.main
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -14,7 +15,9 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.Button
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -51,6 +54,7 @@ import tech.kts.metaclass.githubmobileclient.ui.theme.iconTitleSpace
 import tech.kts.metaclass.githubmobileclient.ui.theme.paddingMedium
 import tech.kts.metaclass.githubmobileclient.ui.theme.paddingSmall
 import tech.kts.metaclass.githubmobileclient.ui.theme.warningIconSize
+import tech.kts.metaclass.githubmobileclient.ui.utils.InfiniteListHandler
 import tech.kts.metaclass.githubmobileclient.ui.views.RepositoryShimmer
 import tech.kts.metaclass.githubmobileclient.ui.views.RepositoryView
 import tech.kts.metaclass.githubmobileclient.ui.views.SearchField
@@ -67,6 +71,7 @@ fun MainScreen(
         onSearchQueryChange = viewModel::onSearchQueryChange,
         onClearSearch = viewModel::clearSearch,
         onSearchRetryClick = viewModel::onSearchRetry,
+        onLoadNextPage = viewModel::loadNextPage,
         modifier = modifier
     )
 }
@@ -77,6 +82,7 @@ private fun MainView(
     onSearchQueryChange: (String) -> Unit,
     onClearSearch: () -> Unit,
     onSearchRetryClick: () -> Unit,
+    onLoadNextPage: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     Scaffold(
@@ -101,15 +107,11 @@ private fun MainView(
                 Shimmers()
             } else if (state.error) {
                 Error(
-                    modifier = Modifier
-                        .fillMaxSize(),
+                    modifier = Modifier.fillMaxSize(),
                     onRetryClick = onSearchRetryClick
                 )
             } else if (state.searchQuery.isBlank()) {
-                EmptySearch(
-                    modifier = Modifier
-                        .fillMaxSize()
-                )
+                EmptySearch(Modifier.fillMaxSize())
             } else {
                 AnimatedVisibility(visible = state.isCachedDataShown) {
                     CachedDataWarning(
@@ -118,7 +120,12 @@ private fun MainView(
                             .padding(bottom = paddingSmall)
                     )
                 }
-                Repositories(state.repositories)
+                Repositories(
+                    repositoriesList = state.repositories,
+                    isLoadingNextPage = state.isLoadingNextPage,
+                    loadNextPage = onLoadNextPage,
+                    modifier = Modifier.fillMaxSize()
+                )
             }
         }
     }
@@ -127,9 +134,14 @@ private fun MainView(
 @Composable
 private fun Repositories(
     repositoriesList: List<RepositoryUiState>,
+    isLoadingNextPage: Boolean,
+    loadNextPage: () -> Unit,
     modifier: Modifier = Modifier
 ) {
+    val listState = rememberLazyListState()
+
     LazyColumn(
+        state = listState,
         verticalArrangement = Arrangement.spacedBy(gapSmall),
         modifier = modifier
     ) {
@@ -143,7 +155,21 @@ private fun Repositories(
                     .fillMaxWidth()
             )
         }
+        if (isLoadingNextPage) {
+            item {
+                Box(
+                    contentAlignment = Alignment.Center,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(vertical = paddingSmall)
+                ) {
+                    CircularProgressIndicator()
+                }
+            }
+        }
     }
+
+    InfiniteListHandler(listState = listState, buffer = 0, onLoadMore = loadNextPage)
 }
 
 @Composable
@@ -281,49 +307,25 @@ private fun MainScreenPreview(
             state = state,
             onSearchQueryChange = {},
             onClearSearch = {},
-            onSearchRetryClick = {}
+            onSearchRetryClick = {},
+            onLoadNextPage = {}
         )
     }
 }
 
 private data class MainPreviewParameter(
-    val isDark: Boolean,
-    val isLoading: Boolean,
-    val isQueryEmpty: Boolean,
-    val error: Boolean
+    val isDark: Boolean = false,
+    val isLoading: Boolean = false,
+    val isQueryEmpty: Boolean = false,
+    val error: Boolean = false
 )
 
 private class MainScreenPreviewProvider : PreviewParameterProvider<MainPreviewParameter> {
     override val values = sequenceOf(
-        MainPreviewParameter(
-            isDark = false,
-            isLoading = false,
-            isQueryEmpty = false,
-            error = false
-        ),
-        MainPreviewParameter(
-            isDark = true,
-            isLoading = false,
-            isQueryEmpty = false,
-            error = false
-        ),
-        MainPreviewParameter(
-            isDark = false,
-            isLoading = true,
-            isQueryEmpty = false,
-            error = false
-        ),
-        MainPreviewParameter(
-            isDark = false,
-            isLoading = false,
-            isQueryEmpty = true,
-            error = false
-        ),
-        MainPreviewParameter(
-            isDark = true,
-            isLoading = false,
-            isQueryEmpty = false,
-            error = true
-        )
+        MainPreviewParameter(),
+        MainPreviewParameter(isDark = true),
+        MainPreviewParameter(isLoading = true),
+        MainPreviewParameter(isQueryEmpty = true),
+        MainPreviewParameter(error = true),
     )
 }

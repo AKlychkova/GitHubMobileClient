@@ -10,7 +10,7 @@ import tech.kts.metaclass.githubmobileclient.data.network.GitHubApi
 import tech.kts.metaclass.githubmobileclient.data.network.mappers.ApiGitHubRepositoryMapper
 import tech.kts.metaclass.githubmobileclient.entities.GitHubRepository
 import tech.kts.metaclass.githubmobileclient.useCases.repositories.GitHubRepositoryRepository
-import tech.kts.metaclass.githubmobileclient.useCases.repositories.SearchRepositoriesResult
+import tech.kts.metaclass.githubmobileclient.useCases.repositories.SearchResult
 import tech.kts.metaclass.githubmobileclient.utils.runSuspendCatching
 
 class GitHubRepositoryRepositoryImpl(
@@ -22,24 +22,28 @@ class GitHubRepositoryRepositoryImpl(
 ) : GitHubRepositoryRepository {
 
     override suspend fun searchRepositories(
-        query: String
-    ): SearchRepositoriesResult = withContext(Dispatchers.IO) {
+        query: String,
+        pageNum: Int
+    ): SearchResult<GitHubRepository> = withContext(Dispatchers.IO) {
         runSuspendCatching {
-            api.searchRepositories(query)
-                .items
-                .map(apiMapper::toDomainModel)
+            api.searchRepositories(query, pageNum, PAGE_SIZE)
         }.fold(
-            onSuccess = { remote ->
-                saveToDb(remote)
-                SearchRepositoriesResult.Success(remote)
+            onSuccess = { page ->
+                val domain = page.items.map(apiMapper::toDomainModel)
+                saveToDb(domain)
+                SearchResult.Success(
+                    data = domain,
+                    nextPageNum = page.nextPageNum,
+                    prevPageNum = page.prevPageNum
+                )
             },
             onFailure = { e ->
-                val cached = getCached()
+                val cached = getCached(query)
 
                 if (cached.isNotEmpty()) {
-                    SearchRepositoriesResult.Cached(cached, e)
+                    SearchResult.Cached(cached, e)
                 } else {
-                    SearchRepositoriesResult.Failure(e)
+                    SearchResult.Failure(e)
                 }
             }
         )
@@ -52,9 +56,13 @@ class GitHubRepositoryRepositoryImpl(
         repositoryDao.insertRepositories(dbModels.map { it.repository })
     }
 
-    private suspend fun getCached(): List<GitHubRepository> {
+    private suspend fun getCached(query: String): List<GitHubRepository> {
         return repositoryDao
-            .getRepositoriesWithUsers()
+            .searchRepositoriesWithUsers(query)
             .map(dbMapper::toDomainModel)
+    }
+
+    private companion object {
+        const val PAGE_SIZE = 30
     }
 }
