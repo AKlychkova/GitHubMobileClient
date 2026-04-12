@@ -5,7 +5,6 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
@@ -22,6 +21,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -42,7 +42,6 @@ import githubmobileclient.composeapp.generated.resources.main_cached_data_warnin
 import githubmobileclient.composeapp.generated.resources.main_empty_search_warning
 import githubmobileclient.composeapp.generated.resources.main_error_primary_button
 import githubmobileclient.composeapp.generated.resources.main_error_title
-import githubmobileclient.composeapp.generated.resources.warning
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
@@ -50,14 +49,13 @@ import tech.kts.metaclass.githubmobileclient.entities.ProgrammingLanguage
 import tech.kts.metaclass.githubmobileclient.ui.theme.GitHubMaterialTheme
 import tech.kts.metaclass.githubmobileclient.ui.theme.gapMedium
 import tech.kts.metaclass.githubmobileclient.ui.theme.gapSmall
-import tech.kts.metaclass.githubmobileclient.ui.theme.iconTitleSpace
 import tech.kts.metaclass.githubmobileclient.ui.theme.paddingMedium
 import tech.kts.metaclass.githubmobileclient.ui.theme.paddingSmall
-import tech.kts.metaclass.githubmobileclient.ui.theme.warningIconSize
 import tech.kts.metaclass.githubmobileclient.ui.utils.InfiniteListHandler
 import tech.kts.metaclass.githubmobileclient.ui.views.RepositoryShimmer
 import tech.kts.metaclass.githubmobileclient.ui.views.RepositoryView
 import tech.kts.metaclass.githubmobileclient.ui.views.SearchField
+import tech.kts.metaclass.githubmobileclient.ui.views.WarningLabel
 
 @Composable
 fun MainScreen(
@@ -70,7 +68,7 @@ fun MainScreen(
         state = state,
         onSearchQueryChange = viewModel::onSearchQueryChange,
         onClearSearch = viewModel::clearSearch,
-        onSearchRetryClick = viewModel::onSearchRetry,
+        onSearchRetry = viewModel::onSearchRetry,
         onLoadNextPage = viewModel::loadNextPage,
         modifier = modifier
     )
@@ -81,51 +79,63 @@ private fun MainView(
     state: MainUiState,
     onSearchQueryChange: (String) -> Unit,
     onClearSearch: () -> Unit,
-    onSearchRetryClick: () -> Unit,
+    onSearchRetry: () -> Unit,
     onLoadNextPage: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     Scaffold(
         modifier = modifier.fillMaxSize()
     ) { contentPadding ->
-        Column(
-            modifier = Modifier
-                .padding(horizontal = paddingMedium)
-                .padding(contentPadding)
-                .fillMaxSize()
+        PullToRefreshBox(
+            isRefreshing = false,
+            onRefresh = onSearchRetry,
+            modifier = Modifier.fillMaxSize()
         ) {
-            SearchField(
-                searchQuery = state.searchQuery,
-                onSearchQueryChange = onSearchQueryChange,
-                onClearSearch = onClearSearch,
-                enabled = !state.isLoading,
+            Column(
                 modifier = Modifier
-                    .padding(vertical = paddingSmall)
-                    .fillMaxWidth()
-            )
-            if (state.isLoading) {
-                Shimmers()
-            } else if (state.error) {
-                Error(
-                    modifier = Modifier.fillMaxSize(),
-                    onRetryClick = onSearchRetryClick
+                    .padding(horizontal = paddingMedium)
+                    .padding(contentPadding)
+                    .fillMaxSize()
+            ) {
+                SearchField(
+                    searchQuery = state.searchQuery,
+                    onSearchQueryChange = onSearchQueryChange,
+                    onClearSearch = onClearSearch,
+                    modifier = Modifier
+                        .padding(vertical = paddingSmall)
+                        .fillMaxWidth()
                 )
-            } else if (state.searchQuery.isBlank()) {
-                EmptySearch(Modifier.fillMaxSize())
-            } else {
-                AnimatedVisibility(visible = state.isCachedDataShown) {
-                    CachedDataWarning(
-                        Modifier
-                            .fillMaxWidth()
-                            .padding(bottom = paddingSmall)
+                when (val listState = state.listState) {
+                    is ListUiState.Error -> Error(
+                        modifier = Modifier.fillMaxSize(),
+                        onRetryClick = onSearchRetry
                     )
+
+                    is ListUiState.Loading -> Shimmers(
+                        modifier = Modifier.fillMaxSize()
+                    )
+
+                    is ListUiState.DataShown -> {
+                        if (state.searchQuery.isBlank()) {
+                            EmptySearch(Modifier.fillMaxSize())
+                        } else {
+                            AnimatedVisibility(visible = listState.isCachedDataShown) {
+                                WarningLabel(
+                                    text = stringResource(Res.string.main_cached_data_warning),
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .padding(bottom = paddingSmall)
+                                )
+                            }
+                            Repositories(
+                                repositoriesList = listState.repositories,
+                                isLoadingNextPage = listState.isLoadingNextPage,
+                                onLoadNextPage = onLoadNextPage,
+                                modifier = Modifier.fillMaxSize()
+                            )
+                        }
+                    }
                 }
-                Repositories(
-                    repositoriesList = state.repositories,
-                    isLoadingNextPage = state.isLoadingNextPage,
-                    loadNextPage = onLoadNextPage,
-                    modifier = Modifier.fillMaxSize()
-                )
             }
         }
     }
@@ -135,11 +145,11 @@ private fun MainView(
 private fun Repositories(
     repositoriesList: List<RepositoryUiState>,
     isLoadingNextPage: Boolean,
-    loadNextPage: () -> Unit,
+    onLoadNextPage: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    val listState = rememberLazyListState()
 
+    val listState = rememberLazyListState()
     LazyColumn(
         state = listState,
         verticalArrangement = Arrangement.spacedBy(gapSmall),
@@ -169,7 +179,7 @@ private fun Repositories(
         }
     }
 
-    InfiniteListHandler(listState = listState, buffer = 0, onLoadMore = loadNextPage)
+    InfiniteListHandler(listState = listState, buffer = 0, onLoadMore = onLoadNextPage)
 }
 
 @Composable
@@ -252,28 +262,6 @@ private fun Error(
 }
 
 @Composable
-private fun CachedDataWarning(
-    modifier: Modifier
-) {
-    Row(
-        horizontalArrangement = Arrangement.spacedBy(iconTitleSpace),
-        verticalAlignment = Alignment.CenterVertically,
-        modifier = modifier
-    ) {
-        Icon(
-            painter = painterResource(Res.drawable.warning),
-            contentDescription = null,
-            tint = MaterialTheme.colorScheme.error,
-            modifier = Modifier.size(warningIconSize)
-        )
-        Text(
-            stringResource(Res.string.main_cached_data_warning),
-            color = MaterialTheme.colorScheme.error
-        )
-    }
-}
-
-@Composable
 @Preview
 private fun MainScreenPreview(
     @PreviewParameter(MainScreenPreviewProvider::class) param: MainPreviewParameter
@@ -293,11 +281,15 @@ private fun MainScreenPreview(
     var state by remember {
         mutableStateOf(
             MainUiState(
-                repositories = repositories,
-                isLoading = param.isLoading,
                 searchQuery = if (param.isQueryEmpty) "" else "some query",
-                isCachedDataShown = true,
-                error = param.error
+                listState = if (param.error)
+                    ListUiState.Error
+                else if (param.isLoading)
+                    ListUiState.Loading
+                else ListUiState.DataShown(
+                    repositories = repositories,
+                    isCachedDataShown = true
+                )
             )
         )
     }
@@ -307,7 +299,7 @@ private fun MainScreenPreview(
             state = state,
             onSearchQueryChange = {},
             onClearSearch = {},
-            onSearchRetryClick = {},
+            onSearchRetry = {},
             onLoadNextPage = {}
         )
     }

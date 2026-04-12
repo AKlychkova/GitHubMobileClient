@@ -5,10 +5,17 @@ import androidx.compose.runtime.Immutable
 @Immutable
 data class MainUiState(
     val searchQuery: String = "contributed-by:@me",
-    val repositories: List<RepositoryUiState> = emptyList(),
-    val isLoading: Boolean = false,
-    val isLoadingNextPage: Boolean = false,
-    val isCachedDataShown: Boolean = false,
-    val error: Boolean = false,
-    val nextPageNum: Int? = null
+    val listState: ListUiState = ListUiState.DataShown()
 )
+
+sealed interface ListUiState {
+    data object Loading: ListUiState
+    data object Error: ListUiState
+
+    @Immutable
+    data class DataShown(
+        val repositories: List<RepositoryUiState> = emptyList(),
+        val isCachedDataShown: Boolean = false,
+        val isLoadingNextPage: Boolean = false
+    ): ListUiState
+}

@@ -24,6 +24,7 @@ class MainViewModel(
     private val mapper: UiRepositoryMapper
 ) : ViewModel() {
     private var currentSearchJob: Job? = null
+    private var nextPageNum: Int? = null
     private val _state = MutableStateFlow(MainUiState())
     val state: StateFlow<MainUiState> = _state.asStateFlow()
     private val searchQueryFlow = MutableStateFlow(_state.value.searchQuery)
@@ -46,9 +47,27 @@ class MainViewModel(
     }
 
     fun loadNextPage() {
-        val nextPageNum = _state.value.nextPageNum ?: return
-        if (_state.value.isLoadingNextPage || _state.value.isCachedDataShown) return
-        loadPage(_state.value.searchQuery, nextPageNum)
+        val currentState = _state.value
+        val listState = currentState.listState as? ListUiState.DataShown ?: return
+        if (listState.isLoadingNextPage || listState.isCachedDataShown) return
+
+        val nextPageNum = nextPageNum ?: return
+        val query = currentState.searchQuery
+        val accumulated = listState.repositories
+
+        currentSearchJob?.cancel()
+        currentSearchJob = viewModelScope.launch {
+            _state.update { current ->
+                val currentListState = current.listState as? ListUiState.DataShown
+                    ?: return@update current
+
+                current.copy(
+                    listState = currentListState.copy(isLoadingNextPage = true)
+                )
+            }
+            val result = search(query, nextPageNum)
+            handleResult(result, accumulated)
+        }
     }
 
     private fun searchRepositories(query: String) {
@@ -56,10 +75,7 @@ class MainViewModel(
         currentSearchJob = viewModelScope.launch {
             _state.update {
                 it.copy(
-                    isLoading = true,
-                    error = false,
-                    repositories = emptyList(),
-                    nextPageNum = null
+                    listState = ListUiState.Loading
                 )
             }
             handleResult(
@@ -73,23 +89,10 @@ class MainViewModel(
         currentSearchJob?.cancel()
         _state.update {
             it.copy(
-                isLoading = false,
-                isLoadingNextPage = false,
-                isCachedDataShown = false,
-                error = false,
-                repositories = emptyList(),
-                nextPageNum = null
+                listState = ListUiState.DataShown()
             )
         }
-    }
-
-    private fun loadPage(query: String, pageNum: Int) {
-        if (query.isBlank()) return
-        currentSearchJob?.cancel()
-        currentSearchJob = viewModelScope.launch {
-            _state.update { it.copy(isLoadingNextPage = true) }
-            handleResult(search(query, pageNum), accumulated = _state.value.repositories)
-        }
+        nextPageNum = null
     }
 
     private fun handleResult(
@@ -100,37 +103,32 @@ class MainViewModel(
             is SearchResult.Success -> {
                 _state.update {
                     it.copy(
-                        isLoading = false,
-                        isLoadingNextPage = false,
-                        isCachedDataShown = false,
-                        error = false,
-                        repositories = accumulated + result.data.map(mapper::toUiState),
-                        nextPageNum = result.nextPageNum
+                        listState = ListUiState.DataShown(
+                            repositories = accumulated + result.data.map(mapper::toUiState)
+                        )
                     )
                 }
+                nextPageNum = result.nextPageNum
             }
 
             is SearchResult.Cached -> {
                 Napier.e("Search error", result.cause, tag = "Network")
                 _state.update {
                     it.copy(
-                        isLoading = false,
-                        isLoadingNextPage = false,
-                        isCachedDataShown = true,
-                        repositories = result.data.map(mapper::toUiState),
-                        nextPageNum = null
+                        listState = ListUiState.DataShown(
+                            repositories = result.data.map(mapper::toUiState),
+                            isCachedDataShown = true,
+                        )
                     )
                 }
+                nextPageNum = null
             }
 
             is SearchResult.Failure -> {
                 Napier.e("Search error", result.cause, tag = "Network")
                 _state.update {
                     it.copy(
-                        isLoading = false,
-                        isLoadingNextPage = false,
-                        error = accumulated.isEmpty(),
-                        nextPageNum = null
+                        listState = ListUiState.Error
                     )
                 }
             }

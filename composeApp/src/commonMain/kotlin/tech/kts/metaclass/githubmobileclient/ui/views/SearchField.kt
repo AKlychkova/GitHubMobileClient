@@ -20,10 +20,10 @@ import org.jetbrains.compose.resources.stringResource
 @Composable
 fun SearchField(
     searchQuery: String,
-    enabled: Boolean,
     onSearchQueryChange: (String) -> Unit,
     onClearSearch: () -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    enabled: Boolean = true
 ) {
     Box(
         modifier = modifier
