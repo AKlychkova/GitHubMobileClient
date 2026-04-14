@@ -12,8 +12,13 @@
     <string name="repo_stars_icon_content_description">Stars</string>
     <string name="repo_forks_icon_content_description">Forks</string>
     <string name="repo_issues_icon_content_description">Opened issues</string>
-    <string name="main_empty_search_warning">Enter a query to start searching.</string>
-    <string name="main_error_title">Something went wrong</string>
-    <string name="main_error_primary_button">Try again</string>
-    <string name="main_cached_data_warning">Cached data is shown</string>
+    <string name="search_empty_search_warning">Enter a query to start searching.</string>
+    <string name="search_nothing_found_warning">No repositories matched your search.</string>
+    <string name="search_nothing_found_warning_subtitle">Try a different search query.</string>
+    <string name="search_cached_data_warning">Cached data is shown</string>
+    <string name="error_title">Something went wrong</string>
+    <string name="error_primary_button">Try again</string>
+    <string name="profile_followers">%1$s followers</string>
+    <string name="profile_repositories">%1$s repositories</string>
+    <string name="profile_logout_button">Logout</string>
 </resources>

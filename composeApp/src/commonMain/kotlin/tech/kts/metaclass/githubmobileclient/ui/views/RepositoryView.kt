@@ -29,7 +29,7 @@ import githubmobileclient.composeapp.generated.resources.repo_stars_icon_content
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import tech.kts.metaclass.githubmobileclient.entities.ProgrammingLanguage
-import tech.kts.metaclass.githubmobileclient.ui.screens.main.RepositoryUiState
+import tech.kts.metaclass.githubmobileclient.ui.screens.search.RepositoryUiState
 import tech.kts.metaclass.githubmobileclient.ui.theme.GitHubMaterialTheme
 import tech.kts.metaclass.githubmobileclient.ui.theme.avatarSize
 import tech.kts.metaclass.githubmobileclient.ui.theme.iconTitleSpace

@@ -11,14 +11,20 @@ import tech.kts.metaclass.githubmobileclient.useCases.preferences.ShouldShowStar
 import tech.kts.metaclass.githubmobileclient.useCases.preferences.ShouldShowStartScreenUseCaseImpl
 import tech.kts.metaclass.githubmobileclient.useCases.preferences.ToggleStartScreenUseCase
 import tech.kts.metaclass.githubmobileclient.useCases.preferences.ToggleStartScreenUseCaseImpl
+import tech.kts.metaclass.githubmobileclient.useCases.profile.GetProfileUseCase
+import tech.kts.metaclass.githubmobileclient.useCases.profile.GetProfileUseCaseImpl
+import tech.kts.metaclass.githubmobileclient.useCases.repositories.ClearRepositoriesCacheUseCase
+import tech.kts.metaclass.githubmobileclient.useCases.repositories.ClearRepositoriesCacheUseCaseImpl
 import tech.kts.metaclass.githubmobileclient.useCases.repositories.SearchRepositoriesUseCase
 import tech.kts.metaclass.githubmobileclient.useCases.repositories.SearchRepositoriesUseCaseImpl
 
 val domainModule = module {
     single<LoginUseCase> { LoginUseCaseImpl(get()) }
-    single<LogoutUseCase> { LogoutUseCaseImpl(get()) }
+    single<LogoutUseCase> { LogoutUseCaseImpl(get(), get()) }
     single<SearchRepositoriesUseCase> { SearchRepositoriesUseCaseImpl(get()) }
     single<ShouldShowStartScreenUseCase> { ShouldShowStartScreenUseCaseImpl(get()) }
     single<ToggleStartScreenUseCase> { ToggleStartScreenUseCaseImpl(get()) }
     single<CheckTokenExistUseCase> { CheckTokenExistUseCaseImpl(get()) }
+    single<GetProfileUseCase> { GetProfileUseCaseImpl(get()) }
+    single<ClearRepositoriesCacheUseCase> { ClearRepositoriesCacheUseCaseImpl(get()) }
 }

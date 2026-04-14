@@ -7,4 +7,6 @@ interface GitHubRepositoryRepository {
         query: String,
         pageNum: Int
     ): SearchResult<GitHubRepository>
+
+    suspend fun clearCache()
 }

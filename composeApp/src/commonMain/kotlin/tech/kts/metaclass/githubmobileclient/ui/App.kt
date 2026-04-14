@@ -62,7 +62,15 @@ private fun RootNavHost(navController: NavHostController = rememberNavController
             )
         }
         composable<Destination.Main> {
-            MainScreen()
+            MainScreen(
+                onNavigateToLogin = {
+                    navController.navigate(route = Destination.Login) {
+                        popUpTo<Destination.Main> {
+                            inclusive = true
+                        }
+                    }
+                }
+            )
         }
     }
 }

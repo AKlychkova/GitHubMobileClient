@@ -1,4 +1,4 @@
-package tech.kts.metaclass.githubmobileclient.ui.screens.main
+package tech.kts.metaclass.githubmobileclient.ui.screens.search
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -19,14 +19,14 @@ import tech.kts.metaclass.githubmobileclient.useCases.repositories.SearchResult
 import tech.kts.metaclass.githubmobileclient.useCases.repositories.SearchRepositoriesUseCase
 
 @OptIn(FlowPreview::class)
-class MainViewModel(
+class SearchViewModel(
     private val search: SearchRepositoriesUseCase,
     private val mapper: UiRepositoryMapper
 ) : ViewModel() {
     private var currentSearchJob: Job? = null
     private var nextPageNum: Int? = null
-    private val _state = MutableStateFlow(MainUiState())
-    val state: StateFlow<MainUiState> = _state.asStateFlow()
+    private val _state = MutableStateFlow(SearchUiState())
+    val state: StateFlow<SearchUiState> = _state.asStateFlow()
     private val searchQueryFlow = MutableStateFlow(_state.value.searchQuery)
 
     init {

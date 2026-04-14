@@ -1,11 +1,11 @@
-package tech.kts.metaclass.githubmobileclient.ui.screens.main
+package tech.kts.metaclass.githubmobileclient.ui.screens.search
 
 import androidx.compose.runtime.Immutable
 
 @Immutable
-data class MainUiState(
+data class SearchUiState(
     val searchQuery: String = "contributed-by:@me",
-    val listState: ListUiState = ListUiState.DataShown()
+    val listState: ListUiState = ListUiState.Loading
 )
 
 sealed interface ListUiState {

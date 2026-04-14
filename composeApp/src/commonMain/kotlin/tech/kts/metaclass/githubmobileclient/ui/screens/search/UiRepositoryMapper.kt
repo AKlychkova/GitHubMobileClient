@@ -1,4 +1,4 @@
-package tech.kts.metaclass.githubmobileclient.ui.screens.main
+package tech.kts.metaclass.githubmobileclient.ui.screens.search
 
 import androidx.compose.ui.text.capitalize
 import androidx.compose.ui.text.intl.Locale

@@ -19,6 +19,7 @@ import org.koin.dsl.module
 import tech.kts.metaclass.githubmobileclient.data.network.GitHubApi
 import tech.kts.metaclass.githubmobileclient.data.network.GitHubApiImpl
 import tech.kts.metaclass.githubmobileclient.data.network.mappers.ApiGitHubRepositoryMapper
+import tech.kts.metaclass.githubmobileclient.data.network.mappers.ApiProfileMapper
 import tech.kts.metaclass.githubmobileclient.data.network.mappers.ApiProgrammingLanguageMapper
 import tech.kts.metaclass.githubmobileclient.data.network.mappers.ApiUserMapper
 import tech.kts.metaclass.githubmobileclient.useCases.auth.TokenRepository
@@ -39,6 +40,7 @@ val networkModule = module {
     factory<ApiUserMapper> { ApiUserMapper() }
     factory<ApiProgrammingLanguageMapper> { ApiProgrammingLanguageMapper() }
     factory<ApiGitHubRepositoryMapper> { ApiGitHubRepositoryMapper(get(), get()) }
+    factory<ApiProfileMapper> { ApiProfileMapper() }
 }
 
 fun authHttpClient() = HttpClient {
@@ -54,7 +56,7 @@ fun authHttpClient() = HttpClient {
                 Napier.d(message, tag = KTOR_LOG_TAG)
             }
         }
-        level = LogLevel.HEADERS
+        level = LogLevel.BODY
     }
 }
 
@@ -74,14 +76,19 @@ fun gitHubHttpClient(tokenRepository: TokenRepository): HttpClient {
                     Napier.d(message, tag = KTOR_LOG_TAG)
                 }
             }
-            level = LogLevel.BODY
+            level = LogLevel.HEADERS
         }
 
         install(Auth) {
             bearer {
                 loadTokens {
                     tokenRepository.getToken()?.let { token ->
-                        BearerTokens(accessToken = token, refreshToken = null)
+                        BearerTokens(accessToken = token, refreshToken = "")
+                    }
+                }
+                refreshTokens {
+                    tokenRepository.getToken()?.let { token ->
+                        BearerTokens(accessToken = token, refreshToken = "")
                     }
                 }
             }

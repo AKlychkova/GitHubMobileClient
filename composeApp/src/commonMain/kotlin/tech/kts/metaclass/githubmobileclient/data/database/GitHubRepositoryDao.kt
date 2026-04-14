@@ -25,8 +25,4 @@ interface GitHubRepositoryDao {
         OR description LIKE '%' || :query || '%'
     """)
     suspend fun searchRepositoriesWithUsers(query: String): List<DbRepositoryWithUser>
-
-
-    @Query("DELETE FROM repositories")
-    suspend fun clearRepositories()
 }

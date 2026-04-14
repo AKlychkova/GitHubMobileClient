@@ -9,9 +9,11 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.tooling.preview.Preview
 import githubmobileclient.composeapp.generated.resources.Res
 import githubmobileclient.composeapp.generated.resources.warning
 import org.jetbrains.compose.resources.painterResource
+import tech.kts.metaclass.githubmobileclient.ui.theme.GitHubMaterialTheme
 import tech.kts.metaclass.githubmobileclient.ui.theme.iconTitleSpace
 import tech.kts.metaclass.githubmobileclient.ui.theme.warningIconSize
 
@@ -35,5 +37,15 @@ fun WarningLabel(
             text,
             color = MaterialTheme.colorScheme.error
         )
+    }
+}
+
+@Preview(
+    showBackground = true
+)
+@Composable
+private fun WarningLabelPreview() {
+    GitHubMaterialTheme {
+        WarningLabel("Some warning info")
     }
 }

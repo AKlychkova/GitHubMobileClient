@@ -49,6 +49,10 @@ class GitHubRepositoryRepositoryImpl(
         )
     }
 
+    override suspend fun clearCache() {
+        userDao.clearData()
+    }
+
     private suspend fun saveToDb(repos: List<GitHubRepository>) {
         val dbModels = repos.map(dbMapper::toDbModel)
 

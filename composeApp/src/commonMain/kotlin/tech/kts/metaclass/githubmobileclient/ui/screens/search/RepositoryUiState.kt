@@ -1,4 +1,4 @@
-package tech.kts.metaclass.githubmobileclient.ui.screens.main
+package tech.kts.metaclass.githubmobileclient.ui.screens.search
 
 import tech.kts.metaclass.githubmobileclient.entities.ProgrammingLanguage
 

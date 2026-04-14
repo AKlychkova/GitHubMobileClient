@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "a61ac0a3b7711cf693db35111539c78f",
+    "identityHash": "965d6cba546da5a83010327be6947f29",
     "entities": [
       {
         "tableName": "users",
@@ -35,7 +35,7 @@
       },
       {
         "tableName": "repositories",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER NOT NULL, `name` TEXT NOT NULL, `description` TEXT, `visibility` TEXT NOT NULL, `language` TEXT NOT NULL, `stars_num` INTEGER NOT NULL, `forks_num` INTEGER NOT NULL, `issues_num` INTEGER NOT NULL, `owner_id` INTEGER NOT NULL, PRIMARY KEY(`id`), FOREIGN KEY(`owner_id`) REFERENCES `users`(`id`) ON UPDATE NO ACTION ON DELETE NO ACTION )",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER NOT NULL, `name` TEXT NOT NULL, `description` TEXT, `visibility` TEXT NOT NULL, `language` TEXT NOT NULL, `stars_num` INTEGER NOT NULL, `forks_num` INTEGER NOT NULL, `issues_num` INTEGER NOT NULL, `owner_id` INTEGER NOT NULL, PRIMARY KEY(`id`), FOREIGN KEY(`owner_id`) REFERENCES `users`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )",
         "fields": [
           {
             "fieldPath": "id",
@@ -100,7 +100,7 @@
         "foreignKeys": [
           {
             "table": "users",
-            "onDelete": "NO ACTION",
+            "onDelete": "CASCADE",
             "onUpdate": "NO ACTION",
             "columns": [
               "owner_id"
@@ -114,7 +114,7 @@
     ],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'a61ac0a3b7711cf693db35111539c78f')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '965d6cba546da5a83010327be6947f29')"
     ]
   }
 }

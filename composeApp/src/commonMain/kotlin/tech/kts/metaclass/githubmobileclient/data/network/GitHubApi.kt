@@ -6,6 +6,7 @@ import io.ktor.client.request.get
 import io.ktor.client.request.parameter
 import io.ktor.client.statement.HttpResponse
 import tech.kts.metaclass.githubmobileclient.data.network.models.ApiGitHubRepository
+import tech.kts.metaclass.githubmobileclient.data.network.models.ApiProfile
 import tech.kts.metaclass.githubmobileclient.data.network.models.ItemsWrapper
 import tech.kts.metaclass.githubmobileclient.data.network.models.Page
 
@@ -16,6 +17,7 @@ interface GitHubApi {
         perPage: Int
     ): Page<ApiGitHubRepository>
 
+    suspend fun getCurrentUser(): ApiProfile
 }
 
 class GitHubApiImpl(
@@ -40,6 +42,8 @@ class GitHubApiImpl(
             prevPageNum = response.prevPage()
         )
     }
+
+    override suspend fun getCurrentUser(): ApiProfile = httpClient.get("user").body()
 
     private fun HttpResponse.nextPage() = this
         .headers["link"]
