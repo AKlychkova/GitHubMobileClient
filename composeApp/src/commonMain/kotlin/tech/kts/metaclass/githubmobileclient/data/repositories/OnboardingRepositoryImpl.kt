@@ -1,8 +1,8 @@
 package tech.kts.metaclass.githubmobileclient.data.repositories
 
-import githubmobileclient.composeapp.generated.resources.Profile_octocat
+import githubmobileclient.composeapp.generated.resources.profile_octocat
 import githubmobileclient.composeapp.generated.resources.Res
-import githubmobileclient.composeapp.generated.resources.Search_octocat
+import githubmobileclient.composeapp.generated.resources.search_repo_octocat
 import githubmobileclient.composeapp.generated.resources.onboarding_desc_1
 import githubmobileclient.composeapp.generated.resources.onboarding_desc_2
 import githubmobileclient.composeapp.generated.resources.onboarding_title_1
@@ -17,12 +17,12 @@ class OnboardingRepositoryImpl(
 
     override fun getOnboardingPages(): List<OnboardingPage> = listOf(
         OnboardingPage(
-            image = Res.drawable.Search_octocat,
+            image = Res.drawable.search_repo_octocat,
             title = Res.string.onboarding_title_1,
             description = Res.string.onboarding_desc_1
         ),
         OnboardingPage(
-            image = Res.drawable.Profile_octocat,
+            image = Res.drawable.profile_octocat,
             title = Res.string.onboarding_title_2,
             description = Res.string.onboarding_desc_2
         )

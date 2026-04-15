@@ -28,7 +28,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import githubmobileclient.composeapp.generated.resources.GitHub_Invertocat_Black
+import githubmobileclient.composeapp.generated.resources.logo
 import githubmobileclient.composeapp.generated.resources.Res
 import githubmobileclient.composeapp.generated.resources.login_image_description
 import githubmobileclient.composeapp.generated.resources.login_primary_button
@@ -107,7 +107,7 @@ private fun LoginView(
                 Spacer(modifier = Modifier.height(gapLarge))
 
                 Icon(
-                    painter = painterResource(Res.drawable.GitHub_Invertocat_Black),
+                    painter = painterResource(Res.drawable.logo),
                     contentDescription = stringResource(Res.string.login_image_description),
                     tint = MaterialTheme.colorScheme.onBackground,
                     modifier = Modifier

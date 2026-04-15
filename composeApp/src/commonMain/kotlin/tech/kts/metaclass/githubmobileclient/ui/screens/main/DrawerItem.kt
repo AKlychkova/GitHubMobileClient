@@ -1,7 +1,7 @@
 package tech.kts.metaclass.githubmobileclient.ui.screens.main
 
-import githubmobileclient.composeapp.generated.resources.Profile
-import githubmobileclient.composeapp.generated.resources.Repo
+import githubmobileclient.composeapp.generated.resources.profile
+import githubmobileclient.composeapp.generated.resources.repo
 import githubmobileclient.composeapp.generated.resources.Res
 import org.jetbrains.compose.resources.DrawableResource
 
@@ -12,13 +12,13 @@ sealed class DrawerItem(
 ) {
     object Search : DrawerItem(
         title = "Repositories",
-        icon = Res.drawable.Repo,
+        icon = Res.drawable.repo,
         destination = DrawerDestination.Search
     )
 
     object Profile : DrawerItem(
-        title = "Profile",
-        icon = Res.drawable.Profile,
+        title = "profile",
+        icon = Res.drawable.profile,
         destination = DrawerDestination.Profile
     )
 }

@@ -38,7 +38,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import githubmobileclient.composeapp.generated.resources.Res
-import githubmobileclient.composeapp.generated.resources.Search_octocat
+import githubmobileclient.composeapp.generated.resources.search_repo_octocat
 import githubmobileclient.composeapp.generated.resources.onboarding_desc_1
 import githubmobileclient.composeapp.generated.resources.onboarding_next_button
 import githubmobileclient.composeapp.generated.resources.onboarding_skip_button
@@ -248,7 +248,7 @@ private fun OnboardingScreenPreview() {
         OnboardingView(
             pages = listOf(
                 OnboardingPage(
-                    image = Res.drawable.Search_octocat,
+                    image = Res.drawable.search_repo_octocat,
                     title = Res.string.onboarding_title_1,
                     description = Res.string.onboarding_desc_1
                 )
@@ -266,7 +266,7 @@ private fun OnboardingScreenPreviewDark() {
         OnboardingView(
             pages = listOf(
                 OnboardingPage(
-                    image = Res.drawable.Search_octocat,
+                    image = Res.drawable.search_repo_octocat,
                     title = Res.string.onboarding_title_1,
                     description = Res.string.onboarding_desc_1
                 )

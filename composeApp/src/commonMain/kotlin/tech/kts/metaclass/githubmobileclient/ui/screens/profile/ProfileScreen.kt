@@ -25,11 +25,11 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import githubmobileclient.composeapp.generated.resources.Location
-import githubmobileclient.composeapp.generated.resources.Mail
-import githubmobileclient.composeapp.generated.resources.Organisation
-import githubmobileclient.composeapp.generated.resources.People
-import githubmobileclient.composeapp.generated.resources.RepoSmall
+import githubmobileclient.composeapp.generated.resources.location
+import githubmobileclient.composeapp.generated.resources.mail
+import githubmobileclient.composeapp.generated.resources.organisation
+import githubmobileclient.composeapp.generated.resources.people
+import githubmobileclient.composeapp.generated.resources.repo_small
 import githubmobileclient.composeapp.generated.resources.Res
 import githubmobileclient.composeapp.generated.resources.profile_followers
 import githubmobileclient.composeapp.generated.resources.profile_logout_button
@@ -175,7 +175,7 @@ private fun Followers(followers: String) {
             horizontalArrangement = Arrangement.spacedBy(profileIconTitleSpace)
         ) {
             Icon(
-                painter = painterResource(Res.drawable.People),
+                painter = painterResource(Res.drawable.people),
                 contentDescription = null,
                 tint = MaterialTheme.colorScheme.onSurfaceVariant,
                 modifier = Modifier.size(profileIconSize)
@@ -196,7 +196,7 @@ private fun Organization(organisation: String?) {
             horizontalArrangement = Arrangement.spacedBy(profileIconTitleSpace)
         ) {
             Icon(
-                painter = painterResource(Res.drawable.Organisation),
+                painter = painterResource(Res.drawable.organisation),
                 contentDescription = null,
                 tint = MaterialTheme.colorScheme.onSurfaceVariant,
                 modifier = Modifier.size(profileIconSize)
@@ -217,7 +217,7 @@ private fun Location(location: String?) {
             horizontalArrangement = Arrangement.spacedBy(profileIconTitleSpace)
         ) {
             Icon(
-                painter = painterResource(Res.drawable.Location),
+                painter = painterResource(Res.drawable.location),
                 contentDescription = null,
                 tint = MaterialTheme.colorScheme.onSurfaceVariant,
                 modifier = Modifier.size(profileIconSize)
@@ -238,7 +238,7 @@ private fun Email(email: String?) {
             horizontalArrangement = Arrangement.spacedBy(profileIconTitleSpace)
         ) {
             Icon(
-                painter = painterResource(Res.drawable.Mail),
+                painter = painterResource(Res.drawable.mail),
                 contentDescription = null,
                 tint = MaterialTheme.colorScheme.onSurfaceVariant,
                 modifier = Modifier.size(profileIconSize)
@@ -258,7 +258,7 @@ private fun RepositoryCount(count: String) {
         horizontalArrangement = Arrangement.spacedBy(profileIconTitleSpace)
     ) {
         Icon(
-            painter = painterResource(Res.drawable.RepoSmall),
+            painter = painterResource(Res.drawable.repo_small),
             contentDescription = null,
             tint = MaterialTheme.colorScheme.onSurfaceVariant,
             modifier = Modifier.size(profileIconSize)

@@ -33,7 +33,7 @@ import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import githubmobileclient.composeapp.generated.resources.Repo
+import githubmobileclient.composeapp.generated.resources.repo
 import githubmobileclient.composeapp.generated.resources.Res
 import githubmobileclient.composeapp.generated.resources.search_cached_data_warning
 import githubmobileclient.composeapp.generated.resources.search_empty_search_warning
@@ -208,7 +208,7 @@ private fun EmptySearch(
         modifier = modifier
     ) {
         Icon(
-            painter = painterResource(Res.drawable.Repo),
+            painter = painterResource(Res.drawable.repo),
             contentDescription = null,
             tint = MaterialTheme.colorScheme.onSurfaceVariant,
             modifier = Modifier.size(64.dp)
@@ -232,7 +232,7 @@ private fun NothingFound(
         modifier = modifier
     ) {
         Icon(
-            painter = painterResource(Res.drawable.Repo),
+            painter = painterResource(Res.drawable.repo),
             contentDescription = null,
             tint = MaterialTheme.colorScheme.onSurfaceVariant,
             modifier = Modifier.size(64.dp)

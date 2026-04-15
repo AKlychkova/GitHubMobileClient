@@ -19,10 +19,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
-import githubmobileclient.composeapp.generated.resources.Issue_Opened
-import githubmobileclient.composeapp.generated.resources.Repo_Forked
+import githubmobileclient.composeapp.generated.resources.issue_opened
+import githubmobileclient.composeapp.generated.resources.repo_forked
 import githubmobileclient.composeapp.generated.resources.Res
-import githubmobileclient.composeapp.generated.resources.Star
+import githubmobileclient.composeapp.generated.resources.star
 import githubmobileclient.composeapp.generated.resources.repo_forks_icon_content_description
 import githubmobileclient.composeapp.generated.resources.repo_issues_icon_content_description
 import githubmobileclient.composeapp.generated.resources.repo_stars_icon_content_description
@@ -101,7 +101,7 @@ fun RepositoryView(
                 )
                 Spacer(Modifier.width(spaceBetweenRepoInfoIcons))
                 Icon(
-                    painter = painterResource(Res.drawable.Repo_Forked),
+                    painter = painterResource(Res.drawable.repo_forked),
                     contentDescription = stringResource(Res.string.repo_forks_icon_content_description),
                     tint = MaterialTheme.colorScheme.onSurface,
                     modifier = Modifier.size(repoInfoIconSize)
@@ -112,7 +112,7 @@ fun RepositoryView(
                 )
                 Spacer(Modifier.width(spaceBetweenRepoInfoIcons))
                 Icon(
-                    painter = painterResource(Res.drawable.Star),
+                    painter = painterResource(Res.drawable.star),
                     contentDescription = stringResource(Res.string.repo_stars_icon_content_description),
                     tint = MaterialTheme.colorScheme.onSurface,
                     modifier = Modifier.size(repoInfoIconSize)
@@ -123,7 +123,7 @@ fun RepositoryView(
                 )
                 Spacer(Modifier.width(spaceBetweenRepoInfoIcons))
                 Icon(
-                    painter = painterResource(Res.drawable.Issue_Opened),
+                    painter = painterResource(Res.drawable.issue_opened),
                     contentDescription = stringResource(Res.string.repo_issues_icon_content_description),
                     tint = MaterialTheme.colorScheme.onSurface,
                     modifier = Modifier.size(repoInfoIconSize)
