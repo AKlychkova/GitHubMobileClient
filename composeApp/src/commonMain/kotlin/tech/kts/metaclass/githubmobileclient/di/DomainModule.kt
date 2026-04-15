@@ -7,10 +7,12 @@ import tech.kts.metaclass.githubmobileclient.useCases.auth.LoginUseCase
 import tech.kts.metaclass.githubmobileclient.useCases.auth.LoginUseCaseImpl
 import tech.kts.metaclass.githubmobileclient.useCases.auth.LogoutUseCase
 import tech.kts.metaclass.githubmobileclient.useCases.auth.LogoutUseCaseImpl
-import tech.kts.metaclass.githubmobileclient.useCases.preferences.ShouldShowStartScreenUseCase
-import tech.kts.metaclass.githubmobileclient.useCases.preferences.ShouldShowStartScreenUseCaseImpl
-import tech.kts.metaclass.githubmobileclient.useCases.preferences.ToggleStartScreenUseCase
-import tech.kts.metaclass.githubmobileclient.useCases.preferences.ToggleStartScreenUseCaseImpl
+import tech.kts.metaclass.githubmobileclient.useCases.onboarding.IsOnboardingCompletedUseCase
+import tech.kts.metaclass.githubmobileclient.useCases.onboarding.IsOnboardingCompletedUseCaseImpl
+import tech.kts.metaclass.githubmobileclient.useCases.onboarding.CompleteOnboardingUseCase
+import tech.kts.metaclass.githubmobileclient.useCases.onboarding.CompleteOnboardingUseCaseImpl
+import tech.kts.metaclass.githubmobileclient.useCases.onboarding.GetOnboardingPagesUseCase
+import tech.kts.metaclass.githubmobileclient.useCases.onboarding.GetOnboardingPagesUseCaseImpl
 import tech.kts.metaclass.githubmobileclient.useCases.profile.GetProfileUseCase
 import tech.kts.metaclass.githubmobileclient.useCases.profile.GetProfileUseCaseImpl
 import tech.kts.metaclass.githubmobileclient.useCases.repositories.ClearRepositoriesCacheUseCase
@@ -22,8 +24,9 @@ val domainModule = module {
     single<LoginUseCase> { LoginUseCaseImpl(get()) }
     single<LogoutUseCase> { LogoutUseCaseImpl(get(), get()) }
     single<SearchRepositoriesUseCase> { SearchRepositoriesUseCaseImpl(get()) }
-    single<ShouldShowStartScreenUseCase> { ShouldShowStartScreenUseCaseImpl(get()) }
-    single<ToggleStartScreenUseCase> { ToggleStartScreenUseCaseImpl(get()) }
+    single<IsOnboardingCompletedUseCase> { IsOnboardingCompletedUseCaseImpl(get()) }
+    single<CompleteOnboardingUseCase> { CompleteOnboardingUseCaseImpl(get()) }
+    single<GetOnboardingPagesUseCase> { GetOnboardingPagesUseCaseImpl(get()) }
     single<CheckTokenExistUseCase> { CheckTokenExistUseCaseImpl(get()) }
     single<GetProfileUseCase> { GetProfileUseCaseImpl(get()) }
     single<ClearRepositoriesCacheUseCase> { ClearRepositoriesCacheUseCaseImpl(get()) }

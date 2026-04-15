@@ -8,7 +8,7 @@ import tech.kts.metaclass.githubmobileclient.ui.screens.profile.UiProfileMapper
 import tech.kts.metaclass.githubmobileclient.ui.screens.search.SearchViewModel
 import tech.kts.metaclass.githubmobileclient.ui.screens.search.UiRepositoryMapper
 import tech.kts.metaclass.githubmobileclient.ui.screens.splash.SplashViewModel
-import tech.kts.metaclass.githubmobileclient.ui.screens.start.StartViewModel
+import tech.kts.metaclass.githubmobileclient.ui.screens.onboarding.OnboardingViewModel
 import tech.kts.metaclass.githubmobileclient.ui.utils.NumberFormatter
 
 val viewModelsModule = module {
@@ -16,7 +16,7 @@ val viewModelsModule = module {
     factory<UiRepositoryMapper> { UiRepositoryMapper(get()) }
     factory<UiProfileMapper> { UiProfileMapper(get()) }
     viewModel { LoginViewModel(get()) }
-    viewModel { StartViewModel(get()) }
+    viewModel { OnboardingViewModel(get(), get()) }
     viewModel { SearchViewModel(get(), get()) }
     viewModel { SplashViewModel(get(), get()) }
     viewModel { ProfileViewModel(get(), get(), get()) }

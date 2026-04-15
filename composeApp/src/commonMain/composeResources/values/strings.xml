@@ -21,4 +21,10 @@
     <string name="profile_followers">%1$s followers</string>
     <string name="profile_repositories">%1$s repositories</string>
     <string name="profile_logout_button">Logout</string>
+    <string name="onboarding_title_1">Discover Repositories</string>
+    <string name="onboarding_desc_1">Explore millions of projects, find what you need, and dive into code from developers around the world.</string>
+    <string name="onboarding_title_2">Your Developer Profile</string>
+    <string name="onboarding_desc_2">See your followers, repository count, and personal information all in one place.</string>
+    <string name="onboarding_next_button">Next</string>
+    <string name="onboarding_skip_button">Skip</string>
 </resources>
