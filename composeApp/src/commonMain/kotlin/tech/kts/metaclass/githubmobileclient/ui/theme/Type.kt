@@ -71,14 +71,14 @@ fun gitHubTypography(): Typography {
 
         titleLarge = TextStyle(
             fontFamily = monaSans,
-            fontWeight = FontWeight.Medium,
+            fontWeight = FontWeight.SemiBold,
             fontSize = 22.sp,
             lineHeight = 28.sp
         ),
 
         titleMedium = TextStyle(
             fontFamily = monaSans,
-            fontWeight = FontWeight.Medium,
+            fontWeight = FontWeight.SemiBold,
             fontSize = 16.sp,
             lineHeight = 24.sp,
             letterSpacing = 0.15.sp
@@ -96,7 +96,7 @@ fun gitHubTypography(): Typography {
             fontFamily = monaSans,
             fontWeight = FontWeight.Normal,
             fontSize = 16.sp,
-            lineHeight = 24.sp,
+            lineHeight = 20.sp,
             letterSpacing = 0.5.sp
         ),
 
@@ -104,7 +104,7 @@ fun gitHubTypography(): Typography {
             fontFamily = monaSans,
             fontWeight = FontWeight.Normal,
             fontSize = 14.sp,
-            lineHeight = 20.sp,
+            lineHeight = 18.sp,
             letterSpacing = 0.25.sp
         ),
 

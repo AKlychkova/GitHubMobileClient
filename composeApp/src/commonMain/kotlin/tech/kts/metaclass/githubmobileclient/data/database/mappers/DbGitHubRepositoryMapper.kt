@@ -12,8 +12,11 @@ class DbGitHubRepositoryMapper {
             id = domain.id,
             name = domain.name,
             description = domain.description,
+            visibility = domain.visibility,
             language = domain.language,
             stars = domain.stars,
+            forks = domain.forks,
+            openIssues = domain.openIssues,
             ownerId = domain.owner.id
         ),
         user = DbUser(
@@ -29,6 +32,9 @@ class DbGitHubRepositoryMapper {
         description = dbModel.repository.description,
         language = dbModel.repository.language,
         stars = dbModel.repository.stars,
+        visibility = dbModel.repository.visibility,
+        forks = dbModel.repository.forks,
+        openIssues = dbModel.repository.openIssues,
         owner = User(
             id = dbModel.user.id,
             username = dbModel.user.username,

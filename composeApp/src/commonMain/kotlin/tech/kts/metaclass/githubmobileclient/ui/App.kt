@@ -10,7 +10,7 @@ import io.github.aakira.napier.Napier
 import tech.kts.metaclass.githubmobileclient.ui.screens.login.LoginScreen
 import tech.kts.metaclass.githubmobileclient.ui.screens.main.MainScreen
 import tech.kts.metaclass.githubmobileclient.ui.screens.splash.SplashScreen
-import tech.kts.metaclass.githubmobileclient.ui.screens.start.StartScreen
+import tech.kts.metaclass.githubmobileclient.ui.screens.onboarding.OnboardingScreen
 import tech.kts.metaclass.githubmobileclient.ui.theme.GitHubMaterialTheme
 
 @Composable
@@ -40,7 +40,7 @@ private fun RootNavHost(navController: NavHostController = rememberNavController
             )
         }
         composable<Destination.Start> {
-            StartScreen(
+            OnboardingScreen(
                 onNavigateToLogin = {
                     navController.navigate(route = Destination.Login) {
                         popUpTo<Destination.Start> {
@@ -62,7 +62,15 @@ private fun RootNavHost(navController: NavHostController = rememberNavController
             )
         }
         composable<Destination.Main> {
-            MainScreen()
+            MainScreen(
+                onNavigateToLogin = {
+                    navController.navigate(route = Destination.Login) {
+                        popUpTo<Destination.Main> {
+                            inclusive = true
+                        }
+                    }
+                }
+            )
         }
     }
 }

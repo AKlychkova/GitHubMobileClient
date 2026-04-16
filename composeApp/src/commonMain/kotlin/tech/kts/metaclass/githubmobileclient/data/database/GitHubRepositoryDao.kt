@@ -18,6 +18,11 @@ interface GitHubRepositoryDao {
     @Query("SELECT * FROM repositories")
     suspend fun getRepositoriesWithUsers(): List<DbRepositoryWithUser>
 
-    @Query("DELETE FROM repositories")
-    suspend fun clearRepositories()
+    @Transaction
+    @Query("""
+        SELECT * FROM repositories 
+        WHERE name LIKE '%' || :query || '%' 
+        OR description LIKE '%' || :query || '%'
+    """)
+    suspend fun searchRepositoriesWithUsers(query: String): List<DbRepositoryWithUser>
 }

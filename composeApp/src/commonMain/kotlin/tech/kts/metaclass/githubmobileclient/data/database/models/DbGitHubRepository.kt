@@ -3,6 +3,7 @@ package tech.kts.metaclass.githubmobileclient.data.database.models
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.ForeignKey
+import androidx.room.ForeignKey.Companion.CASCADE
 import androidx.room.PrimaryKey
 import tech.kts.metaclass.githubmobileclient.entities.ProgrammingLanguage
 
@@ -12,7 +13,8 @@ import tech.kts.metaclass.githubmobileclient.entities.ProgrammingLanguage
         ForeignKey(
             entity = DbUser::class,
             parentColumns = ["id"],
-            childColumns = ["owner_id"]
+            childColumns = ["owner_id"],
+            onDelete = CASCADE
         )
     ]
 )
@@ -27,11 +29,20 @@ data class DbGitHubRepository (
     @ColumnInfo(name = "description")
     val description: String?,
 
+    @ColumnInfo(name = "visibility")
+    val visibility: String,
+
     @ColumnInfo(name = "language")
     val language: ProgrammingLanguage,
 
     @ColumnInfo(name = "stars_num")
     val stars: Int,
+
+    @ColumnInfo(name = "forks_num")
+    val forks: Int,
+
+    @ColumnInfo(name = "issues_num")
+    val openIssues: Int,
 
     @ColumnInfo(name = "owner_id")
     val ownerId: Long
